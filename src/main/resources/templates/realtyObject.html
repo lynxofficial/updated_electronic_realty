@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="Layout(content)"
+      th:replace="base::Layout(~{::section})">
+<script th:inline="javascript">
+</script>
+<head>
+    <meta charset="UTF-8">
+    <title>Продажа недвижимости</title>
+</head>
+<body>
+<section>
+    <div class="container p-3">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header text-center fs-4">Продажа недвижимости</div>
+                    <!--/*@thymesVar id="msg" type="java"*/-->
+                    <th:block th:if="${session.msg}">
+                        <p class="text-center text-success fs-4">
+                            [[${session.msg}]]
+                        </p>
+                        <!--/*@thymesVar id="removeSessionMessage" type="java"*/-->
+                        <th:block th:text="${@userServiceImpl.removeSessionMessage()}"></th:block>
+                    </th:block>
+                    <div class="card-body">
+                        <form action="/sellRealtyObject" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label>Введите название недвижимости</label>
+                                <label for="realtyObjectName"></label><input type="text" id="realtyObjectName"
+                                                                             name="realtyObjectName"
+                                                                             class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label>Введите описание</label>
+                                <label for="description"></label><input type="text" id="description" name="description"
+                                                                        class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <!--/*@thymesVar id="message" type="java"*/-->
+                                <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
+                                <div class="form-group">
+                                    <input type="file" name="image" accept="image/*" class="form-control-file">
+                                </div>
+                                <span th:if="${msg != null}" th:text="${msg}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label>Стоимость, ₽</label>
+                                <label for="price"></label><input type="text" id="price" name="price"
+                                                                  class="form-control">
+                            </div>
+                            <button class="btn btn-primary col-md-12">
+                                Выставить на продажу
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

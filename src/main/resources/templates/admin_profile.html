@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="Layout(content)"
+      th:replace="base::Layout(~{::body})">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль администратора</title>
+</head>
+<body>
+<section class="text-center">
+    <h1>Профиль администратора</h1>
+    <h4>Имя: [[${user.fullName}]]</h4>
+    <h4>Email: [[${user.email}]]</h4>
+    <h4>Роль: [[${user.role}]]</h4>
+    <h4>Баланс: INFINITY</h4>
+    <a href="/logout">Выйти</a>
+</section>
+</body>
+</html>
