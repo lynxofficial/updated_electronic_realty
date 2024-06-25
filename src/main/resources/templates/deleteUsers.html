@@ -21,6 +21,7 @@
                                 <p class="card-text" th:text="${'ID пользователя: '+user.userId}"/>
                                 <p class="card-text" th:text="${'email: '+user.email}"/>
                                 <input type="hidden" name="email" id="email" th:value="${user.email}" required>
+                                <input type="hidden" name="userId" id="userId" th:value="${user.userId}" required>
                                 <button type="submit" class="btn btn-primary" data-bs-toggle="modal">
                                     Удалить
                                 </button>

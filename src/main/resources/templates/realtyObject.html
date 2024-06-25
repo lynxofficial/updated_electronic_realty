@@ -28,12 +28,22 @@
                                 <label>Введите название недвижимости</label>
                                 <label for="realtyObjectName"></label><input type="text" id="realtyObjectName"
                                                                              name="realtyObjectName"
-                                                                             class="form-control">
+                                                                             class="form-control" required>
                             </div>
                             <div class="mb-3">
                                 <label>Введите описание</label>
                                 <label for="description"></label><input type="text" id="description" name="description"
-                                                                        class="form-control">
+                                                                        class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Введите адрес</label>
+                                <label for="address"></label><input type="text" id="address" name="address"
+                                                                        class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Введите площадь, м2</label>
+                                <label for="square"></label><input type="text" id="square" name="square"
+                                                                    class="form-control" required>
                             </div>
                             <div class="mb-3">
                                 <!--/*@thymesVar id="message" type="java"*/-->
@@ -46,7 +56,7 @@
                             <div class="mb-3">
                                 <label>Стоимость, ₽</label>
                                 <label for="price"></label><input type="text" id="price" name="price"
-                                                                  class="form-control">
+                                                                  class="form-control" required>
                             </div>
                             <button class="btn btn-primary col-md-12">
                                 Выставить на продажу

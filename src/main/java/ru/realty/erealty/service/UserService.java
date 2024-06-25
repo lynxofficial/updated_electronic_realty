@@ -24,5 +24,5 @@ public interface UserService {
     String generateDigitalSignature(String passwordForDigitalSignature) throws NoSuchAlgorithmException,
             InvalidKeyException, SignatureException;
 
-    void deleteUser(User user);
+    void deleteById(Integer userId);
 }

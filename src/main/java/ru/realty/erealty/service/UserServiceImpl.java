@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
             simpleMailMessage.setSubject("Сброс пароля");
             simpleMailMessage.setText("Здравствуйте \n\n" + "Пожалуйста, кликните на эту ссылку для сброса пароля:" +
                     resetLink + ". \n\n" + "С уважением \n" + "Egor");
+            System.out.println(resetLink);
             javaMailSender.send(simpleMailMessage);
             return "success";
         } catch (Exception e) {
@@ -143,7 +144,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(User user) {
-        userRepository.delete(user);
+    public void deleteById(Integer userId) {
+        userRepository.deleteById(userId);
     }
 }

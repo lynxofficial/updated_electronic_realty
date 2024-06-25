@@ -252,8 +252,8 @@ public class HomeController {
     }
 
     @PostMapping("/deleteUser")
-    public String deleteUser(@ModelAttribute User user) {
-        userService.deleteUser(userRepository.findByEmail(user.getEmail()));
+    public String deleteUser(@RequestParam Integer userId) {
+        userService.deleteById(userId);
         return "redirect:/deleteUsers";
     }
 
