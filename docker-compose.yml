@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  application_container:
+    image: application
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8181:8181"
+    depends_on:
+      - db
+    environment:
+      - SERVER_PORT=8181
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db/electronic_realty_database
+  db:
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: electronic_realty_database
