@@ -1,6 +1,6 @@
 package ru.realty.erealty.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -9,12 +9,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.realty.erealty.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    public CustomAuthSuccessHandler customAuthSuccessHandler;
+    private final UserRepository userRepository;
+    public final CustomAuthSuccessHandler customAuthSuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -23,7 +25,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService getUserDetailsService() {
-        return new CustomUserDetailsService();
+        return new CustomUserDetailsService(userRepository);
     }
 
     @Bean

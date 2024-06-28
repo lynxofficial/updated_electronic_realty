@@ -1,14 +1,14 @@
 package ru.realty.erealty.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.repository.RealtyObjectRepository;
 
 @Service
+@RequiredArgsConstructor
 public class RealtyObjectServiceImpl implements RealtyObjectService {
-    @Autowired
-    private RealtyObjectRepository realtyObjectRepository;
+    private final RealtyObjectRepository realtyObjectRepository;
 
     @Override
     public void saveRealtyObject(RealtyObject realtyObject) {

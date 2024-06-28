@@ -1,5 +1,6 @@
 package ru.realty.erealty.config;
 
+import lombok.RequiredArgsConstructor;
 import ru.realty.erealty.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,12 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class CustomUser implements UserDetails {
-    private User user;
-
-    public CustomUser(User user) {
-        this.user = user;
-    }
+    private final User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

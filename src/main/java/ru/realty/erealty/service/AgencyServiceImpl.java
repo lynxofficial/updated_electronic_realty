@@ -1,14 +1,14 @@
 package ru.realty.erealty.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.realty.erealty.entity.Agency;
 import ru.realty.erealty.repository.AgencyRepository;
 
 @Service
+@RequiredArgsConstructor
 public class AgencyServiceImpl implements AgencyService {
-    @Autowired
-    private AgencyRepository agencyRepository;
+    private final AgencyRepository agencyRepository;
 
     @Override
     public Agency saveAgency(Agency agency) {

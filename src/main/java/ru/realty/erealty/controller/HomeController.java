@@ -2,6 +2,7 @@ package ru.realty.erealty.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +18,6 @@ import ru.realty.erealty.repository.TokenRepository;
 import ru.realty.erealty.repository.UserRepository;
 import ru.realty.erealty.service.RealtyObjectService;
 import ru.realty.erealty.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -33,23 +33,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
-    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/src/main/resources/static";
+    public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/src/main/resources/static";
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RealtyObjectService realtyObjectService;
-    @Autowired
-    private RealtyObjectRepository realtyObjectRepository;
-    @Autowired
-    private TokenRepository tokenRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AgencyRepository agencyRepository;
+    private final UserService userService;
+    private final UserRepository userRepository;
+    private final RealtyObjectService realtyObjectService;
+    private final RealtyObjectRepository realtyObjectRepository;
+    private final TokenRepository tokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AgencyRepository agencyRepository;
 
     @ModelAttribute
     public void commonUser(Principal principal, Model model) {

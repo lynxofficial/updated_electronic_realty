@@ -1,8 +1,8 @@
 package ru.realty.erealty.controller;
 
+import lombok.RequiredArgsConstructor;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @ModelAttribute
     public void commonUser(Principal principal, Model model) {

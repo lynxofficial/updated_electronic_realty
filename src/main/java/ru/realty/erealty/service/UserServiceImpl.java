@@ -2,11 +2,11 @@ package ru.realty.erealty.service;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.repository.TokenRepository;
 import ru.realty.erealty.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,15 +22,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    private JavaMailSender javaMailSender;
-    @Autowired
-    private TokenRepository tokenRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JavaMailSender javaMailSender;
+    private final TokenRepository tokenRepository;
 
     @Override
     public User saveUser(User user, String url) {
@@ -105,7 +102,7 @@ public class UserServiceImpl implements UserService {
         resetToken.setToken(uuid.toString());
         resetToken.setExpiryDateTime(expiryDateTime);
         resetToken.setUser(user);
-        PasswordResetToken token = tokenRepository.save(resetToken);
+        tokenRepository.save(resetToken);
         String endpointUrl = "http://localhost:8080/resetPassword";
         return endpointUrl + "/" + resetToken.getToken();
     }
