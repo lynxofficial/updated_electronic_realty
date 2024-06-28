@@ -1,23 +1,26 @@
 package ru.realty.erealty.service;
 
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.repository.TokenRepository;
+import ru.realty.erealty.repository.CustomTokenRepository;
 import ru.realty.erealty.repository.UserRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,13 +28,28 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JavaMailSender javaMailSender;
-    private final TokenRepository tokenRepository;
+    private final CustomTokenRepository customTokenRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        userRepository.deleteById(id);
+    }
 
     @Override
     public User saveUser(User user, String url) {
-        String password = bCryptPasswordEncoder.encode(user.getPassword());
+        String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
         user.setRole("ROLE_USER");
         user.setEnable(false);
@@ -39,6 +57,19 @@ public class UserServiceImpl implements UserService {
         User user1 = userRepository.save(user);
         sendEmail(user1, url);
         return userRepository.save(user);
+    }
+
+    @Override
+    public void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest) {
+        String url = httpServletRequest.getRequestURL().toString();
+        url = url.replace(httpServletRequest.getServletPath(), "");
+        user.setBalance(BigDecimal.ZERO);
+        User user1 = saveUser(user, url);
+        if (user1 != null) {
+            httpSession.setAttribute("msg", "Регистрация успешно выполнена!");
+        } else {
+            httpSession.setAttribute("msg", "Ошибка сервера");
+        }
     }
 
     @Override
@@ -55,7 +86,6 @@ public class UserServiceImpl implements UserService {
         String subject = "Подтверждение аккаунта";
         String content = "Дорогой [[name]],<br>" + "Пожалуйста, перейдите по ссылке для подтверждения аккаунта:<br>"
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">ПОДТВЕРДИТЬ</a></h3>" + "Спасибо,<br>" + "Egor";
-
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -76,11 +106,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public String sendEmail(User user) {
         try {
-            User user1 = userRepository.findByEmail(user.getEmail());
-            String resetLink = generateResetToken(user1);
+            User currentUser = userRepository.findByEmail(user.getEmail());
+            String resetLink = generateResetToken(currentUser);
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
             simpleMailMessage.setFrom("tester17591@yandex.ru");
-            simpleMailMessage.setTo(user1.getEmail());
+            simpleMailMessage.setTo(currentUser.getEmail());
             simpleMailMessage.setSubject("Сброс пароля");
             simpleMailMessage.setText("Здравствуйте \n\n" + "Пожалуйста, кликните на эту ссылку для сброса пароля:" +
                     resetLink + ". \n\n" + "С уважением \n" + "Egor");
@@ -102,7 +132,7 @@ public class UserServiceImpl implements UserService {
         resetToken.setToken(uuid.toString());
         resetToken.setExpiryDateTime(expiryDateTime);
         resetToken.setUser(user);
-        tokenRepository.save(resetToken);
+        customTokenRepository.save(resetToken);
         String endpointUrl = "http://localhost:8080/resetPassword";
         return endpointUrl + "/" + resetToken.getToken();
     }
@@ -127,7 +157,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String generateDigitalSignature(String passwordForDigitalSignature) throws NoSuchAlgorithmException,
+    public void generateDigitalSignature(String passwordForDigitalSignature, User user) throws NoSuchAlgorithmException,
             InvalidKeyException, SignatureException {
         Signature signature = Signature.getInstance("SHA256WithDSA");
         SecureRandom secureRandom = new SecureRandom();
@@ -137,11 +167,16 @@ public class UserServiceImpl implements UserService {
         byte[] data = passwordForDigitalSignature.getBytes(StandardCharsets.UTF_8);
         signature.update(data);
         byte[] digitalSignature = signature.sign();
-        return new String(digitalSignature, StandardCharsets.UTF_16);
+        user.setDigitalSignature(new String(digitalSignature, StandardCharsets.UTF_16));
+        userRepository.save(user);
     }
 
     @Override
-    public void deleteById(Integer userId) {
-        userRepository.deleteById(userId);
+    public void resetPasswordProcess(User user) {
+        User currentUser = userRepository.findByEmail(user.getEmail());
+        if (currentUser != null) {
+            currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(currentUser);
+        }
     }
 }

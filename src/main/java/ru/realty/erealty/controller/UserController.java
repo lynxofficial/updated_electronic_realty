@@ -3,7 +3,6 @@ package ru.realty.erealty.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import ru.realty.erealty.service.UserService;
@@ -14,14 +13,13 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class UserController {
-    private final UserRepository userRepository;
     private final UserService userService;
 
     @ModelAttribute
     public void commonUser(Principal principal, Model model) {
         if (principal != null) {
             String email = principal.getName();
-            User user = userRepository.findByEmail(email);
+            User user = userService.findByEmail(email);
             model.addAttribute("user", user);
         }
     }
@@ -33,7 +31,7 @@ public class UserController {
 
     @GetMapping("/deleteUsers")
     public String deleteUsers(Model model) {
-        List<User> users = userRepository.findAll();
+        List<User> users = userService.findAll();
         model.addAttribute("users", users);
         return "deleteUsers";
     }

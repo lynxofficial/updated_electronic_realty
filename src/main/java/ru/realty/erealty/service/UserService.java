@@ -1,15 +1,26 @@
 package ru.realty.erealty.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import ru.realty.erealty.entity.User;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface UserService {
 
+    List<User> findAll();
+
+    User findByEmail(String email);
+
+    void deleteById(Integer userId);
+
     User saveUser(User user, String url);
+
+    void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest);
 
     void removeSessionMessage();
 
@@ -21,8 +32,8 @@ public interface UserService {
 
     boolean hasExpired(LocalDateTime expiryDateTime);
 
-    String generateDigitalSignature(String passwordForDigitalSignature) throws NoSuchAlgorithmException,
+    void generateDigitalSignature(String passwordForDigitalSignature, User user) throws NoSuchAlgorithmException,
             InvalidKeyException, SignatureException;
 
-    void deleteById(Integer userId);
+    void resetPasswordProcess(User user);
 }

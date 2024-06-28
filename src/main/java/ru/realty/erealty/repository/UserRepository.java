@@ -19,8 +19,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Override
     @NonNull
-    Optional<User> findById(@NonNull Integer integer);
+    Optional<User> findById(@NonNull Integer id);
 
     @Override
-    void deleteById(@NonNull Integer userId);
+    void deleteById(@NonNull Integer id);
 }
