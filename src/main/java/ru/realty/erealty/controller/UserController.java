@@ -1,21 +1,21 @@
 package ru.realty.erealty.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import ru.realty.erealty.service.UserService;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/user")
 public class UserController {
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @ModelAttribute
     public void commonUser(Principal principal, Model model) {
@@ -26,8 +26,21 @@ public class UserController {
         }
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/user/profile")
     public String profile() {
         return "profile";
+    }
+
+    @GetMapping("/deleteUsers")
+    public String deleteUsers(Model model) {
+        List<User> users = userRepository.findAll();
+        model.addAttribute("users", users);
+        return "deleteUsers";
+    }
+
+    @PostMapping("/deleteUser")
+    public String deleteUser(@RequestParam Integer userId) {
+        userService.deleteById(userId);
+        return "redirect:/deleteUsers";
     }
 }
