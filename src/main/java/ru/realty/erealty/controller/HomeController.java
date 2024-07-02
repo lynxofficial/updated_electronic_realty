@@ -1,46 +1,45 @@
 package ru.realty.erealty.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import ru.realty.erealty.service.RealtyObjectService;
-import ru.realty.erealty.service.UserService;
+import ru.realty.erealty.service.HomeTemplateFillingService;
+import ru.realty.erealty.service.UserSearchingService;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
-    private final RealtyObjectService realtyObjectService;
-    private final UserService userService;
+    private final UserSearchingService userSearchingService;
+    private final HomeTemplateFillingService homeTemplateFillingService;
 
     @ModelAttribute
     public void commonUser(Principal principal, Model model) {
         if (principal != null) {
             String email = principal.getName();
-            User user = userService.findByEmail(email);
+            User user = userSearchingService.findByEmail(email);
             model.addAttribute("user", user);
         }
     }
 
     @GetMapping("/")
     public String index(Model model) {
-        List<RealtyObject> realtyObjectList = realtyObjectService.findAll();
-        model.addAttribute("realtyObjects", realtyObjectList);
-        return "index";
+        homeTemplateFillingService.fillHomeTemplate(model);
+        return new ResponseEntity<>("index", HttpStatus.OK).getBody();
     }
 
     @GetMapping("/register")
     public String register() {
-        return "register";
+        return new ResponseEntity<>("register", HttpStatus.OK).getBody();
     }
 
     @GetMapping("/signIn")
     public String login() {
-        return "login";
+        return new ResponseEntity<>("login", HttpStatus.OK).getBody();
     }
 }

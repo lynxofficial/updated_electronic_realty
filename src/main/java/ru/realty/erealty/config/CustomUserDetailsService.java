@@ -1,7 +1,6 @@
 package ru.realty.erealty.config;
 
 import lombok.RequiredArgsConstructor;
-import ru.realty.erealty.entity.User;
 import ru.realty.erealty.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,11 +14,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("Пользователь не найден");
-        } else {
-            return new CustomUser(user);
-        }
+        return userRepository
+                .findByEmail(username)
+                .map(CustomUser::new)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 }

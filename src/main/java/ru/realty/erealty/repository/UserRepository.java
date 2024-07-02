@@ -13,9 +13,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @NonNull
     List<User> findAll();
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    User findByVerificationCode(String verificationCode);
+    Optional<User> findByVerificationCode(String verificationCode);
 
     @Override
     @NonNull

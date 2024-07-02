@@ -4,8 +4,10 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.realty.erealty.entity.PasswordResetToken;
+import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.repository.CustomTokenRepository;
 import ru.realty.erealty.repository.UserRepository;
@@ -22,11 +24,12 @@ import java.security.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserVerificationService, UserSearchingService, UserModificationService {
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
     private final CustomTokenRepository customTokenRepository;
@@ -39,7 +42,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 
     @Override
@@ -48,7 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveUser(User user, String url) {
+    public Optional<User> saveUser(User user, String url) {
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
         user.setRole("ROLE_USER");
@@ -56,7 +61,7 @@ public class UserServiceImpl implements UserService {
         user.setVerificationCode(UUID.randomUUID().toString());
         User user1 = userRepository.save(user);
         sendEmail(user1, url);
-        return userRepository.save(user);
+        return Optional.of(userRepository.save(user));
     }
 
     @Override
@@ -64,12 +69,9 @@ public class UserServiceImpl implements UserService {
         String url = httpServletRequest.getRequestURL().toString();
         url = url.replace(httpServletRequest.getServletPath(), "");
         user.setBalance(BigDecimal.ZERO);
-        User user1 = saveUser(user, url);
-        if (user1 != null) {
-            httpSession.setAttribute("msg", "Регистрация успешно выполнена!");
-        } else {
-            httpSession.setAttribute("msg", "Ошибка сервера");
-        }
+        Optional<User> user1 = saveUser(user, url);
+        user1.ifPresentOrElse(value -> httpSession.setAttribute("msg", "Регистрация успешно выполнена!"),
+                () -> httpSession.setAttribute("msg", "Ошибка сервера"));
     }
 
     @Override
@@ -106,7 +108,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public String sendEmail(User user) {
         try {
-            User currentUser = userRepository.findByEmail(user.getEmail());
+            User currentUser = userRepository
+                    .findByEmail(user.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
             String resetLink = generateResetToken(currentUser);
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
             simpleMailMessage.setFrom("tester17591@yandex.ru");
@@ -145,15 +149,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean verifyAccount(String verificationCode) {
-        User user = userRepository.findByVerificationCode(verificationCode);
-        if (user == null) {
-            return false;
-        } else {
-            user.setEnable(true);
-            user.setVerificationCode(null);
-            userRepository.save(user);
-            return true;
-        }
+        User user = userRepository.findByVerificationCode(verificationCode)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+        user.setEnable(true);
+        user.setVerificationCode(null);
+        userRepository.save(user);
+        return true;
     }
 
     @Override
@@ -173,10 +174,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPasswordProcess(User user) {
-        User currentUser = userRepository.findByEmail(user.getEmail());
-        if (currentUser != null) {
-            currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(currentUser);
-        }
+        User currentUser = userRepository
+                .findByEmail(user.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+        currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(currentUser);
+    }
+
+    @Override
+    public Boolean isNotPositiveBalanceOrExistsDigitalSignature(User currentUser, User targetUser,
+                                                                RealtyObject currentRealtyObject) {
+        return currentUser.getBalance().subtract(currentRealtyObject.getPrice()).compareTo(BigDecimal.ZERO) < 0
+                || currentUser.getDigitalSignature() == null
+                || currentUser.getUserId().equals(targetUser.getUserId());
     }
 }
