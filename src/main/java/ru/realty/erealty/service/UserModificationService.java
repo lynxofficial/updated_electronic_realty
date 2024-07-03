@@ -13,9 +13,10 @@ public interface UserModificationService {
 
     void deleteById(Integer userId);
 
-    Optional<User> saveUser(User user, String url);
+    Optional<User> saveUser(User user, String url, String defaultMailImagePath);
 
-    void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest);
+    void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest,
+                  String defaultMailImagePath);
 
     void removeSessionMessage();
 

@@ -4,6 +4,7 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.realty.erealty.entity.PasswordResetToken;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     private final JavaMailSender javaMailSender;
     private final CustomTokenRepository customTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserAttachmentImageMailService userAttachmentImageMailService;
 
     @Override
     public List<User> findAll() {
@@ -53,23 +55,25 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
-    public Optional<User> saveUser(User user, String url) {
+    public Optional<User> saveUser(User user, String url,
+                                   @Value("${default.mail.image.path}") String defaultMailImagePath) {
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
         user.setRole("ROLE_USER");
         user.setEnable(false);
         user.setVerificationCode(UUID.randomUUID().toString());
         User user1 = userRepository.save(user);
-        sendEmail(user1, url);
+        new Thread(() -> sendEmail(user1, url, defaultMailImagePath)).start();
         return Optional.of(userRepository.save(user));
     }
 
     @Override
-    public void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest) {
+    public void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest,
+                         @Value("${default.mail.image.path}") String defaultMailImagePath) {
         String url = httpServletRequest.getRequestURL().toString();
         url = url.replace(httpServletRequest.getServletPath(), "");
         user.setBalance(BigDecimal.ZERO);
-        Optional<User> user1 = saveUser(user, url);
+        Optional<User> user1 = saveUser(user, url, defaultMailImagePath);
         user1.ifPresentOrElse(value -> httpSession.setAttribute("msg", "Регистрация успешно выполнена!"),
                 () -> httpSession.setAttribute("msg", "Ошибка сервера"));
     }
@@ -82,7 +86,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
-    public void sendEmail(User user, String url) {
+    public void sendEmail(User user, String url, @Value("${default.mail.image.path}") String defaultMailImagePath) {
         String from = "tester17591@yandex.ru";
         String to = user.getEmail();
         String subject = "Подтверждение аккаунта";
@@ -90,7 +94,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">ПОДТВЕРДИТЬ</a></h3>" + "Спасибо,<br>" + "Egor";
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setFrom(from, "Egor");
             helper.setTo(to);
             helper.setSubject(subject);
@@ -99,7 +103,8 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
             System.out.println(siteUrl);
             content = content.replace("[[URL]]", siteUrl);
             helper.setText(content, true);
-            javaMailSender.send(message);
+            userAttachmentImageMailService.attachImageToMail(helper, defaultMailImagePath);
+            new Thread(() -> javaMailSender.send(message)).start();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -119,7 +124,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
             simpleMailMessage.setText("Здравствуйте \n\n" + "Пожалуйста, кликните на эту ссылку для сброса пароля:" +
                     resetLink + ". \n\n" + "С уважением \n" + "Egor");
             System.out.println(resetLink);
-            javaMailSender.send(simpleMailMessage);
+            new Thread(() -> javaMailSender.send(simpleMailMessage)).start();
             return "success";
         } catch (Exception e) {
             System.out.println(e.getMessage());
