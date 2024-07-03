@@ -53,7 +53,7 @@ public class UserAttachmentImageMailServiceImpl implements UserAttachmentImageMa
                 .forEach(System.out::println);
     }
 
-    public CompletableFuture<String> downloadImage(String imageLink,
+    private CompletableFuture<String> downloadImage(String imageLink,
                                                    @Value("${default.mail.image.path}") String defaultMailImagePath,
                                                    Integer imageNumber) {
         return CompletableFuture.supplyAsync(() -> {
