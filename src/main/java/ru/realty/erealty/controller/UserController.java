@@ -1,33 +1,48 @@
 package ru.realty.erealty.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import ru.realty.erealty.service.UserModificationService;
+import ru.realty.erealty.service.UserSearchingService;
+import ru.realty.erealty.service.UserTemplateFillingService;
 
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserSearchingService userSearchingService;
+    private final UserModificationService userModificationService;
+    private final UserTemplateFillingService userTemplateFillingService;
 
     @ModelAttribute
     public void commonUser(Principal principal, Model model) {
         if (principal != null) {
             String email = principal.getName();
-            User user = userRepository.findByEmail(email);
+            User user = userSearchingService.findByEmail(email);
             model.addAttribute("user", user);
         }
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/user/profile")
     public String profile() {
-        return "profile";
+        return new ResponseEntity<>("profile", HttpStatus.OK).getBody();
+    }
+
+    @GetMapping("/deleteUsers")
+    public String deleteUsers(Model model) {
+        userTemplateFillingService.fillDeleteUserTemplate(model);
+        return new ResponseEntity<>("deleteUsers", HttpStatus.OK).getBody();
+    }
+
+    @PostMapping("/deleteUser")
+    public String deleteUser(@RequestParam Integer userId) {
+        userModificationService.deleteById(userId);
+        return new ResponseEntity<>("redirect:/deleteUsers", HttpStatus.OK).getBody();
     }
 }

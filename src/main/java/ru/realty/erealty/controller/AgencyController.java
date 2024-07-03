@@ -3,20 +3,21 @@ package ru.realty.erealty.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.realty.erealty.entity.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import ru.realty.erealty.service.HomeTemplateFillingService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import ru.realty.erealty.entity.User;
+import ru.realty.erealty.service.AgencyTemplateFillingService;
 import ru.realty.erealty.service.UserSearchingService;
 
 import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
-public class HomeController {
+public class AgencyController {
     private final UserSearchingService userSearchingService;
-    private final HomeTemplateFillingService homeTemplateFillingService;
+    private final AgencyTemplateFillingService agencyTemplateFillingService;
 
     @ModelAttribute
     public void commonUser(Principal principal, Model model) {
@@ -27,19 +28,9 @@ public class HomeController {
         }
     }
 
-    @GetMapping("/")
-    public String index(Model model) {
-        homeTemplateFillingService.fillHomeTemplate(model);
-        return new ResponseEntity<>("index", HttpStatus.OK).getBody();
-    }
-
-    @GetMapping("/register")
-    public String register() {
-        return new ResponseEntity<>("register", HttpStatus.OK).getBody();
-    }
-
-    @GetMapping("/signIn")
-    public String login() {
-        return new ResponseEntity<>("login", HttpStatus.OK).getBody();
+    @GetMapping("/agencies")
+    public String getAllAgencies(Model model) {
+        agencyTemplateFillingService.fillAgencyTemplate(model);
+        return new ResponseEntity<>("agencies", HttpStatus.OK).getBody();
     }
 }

@@ -13,14 +13,14 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @NonNull
     List<User> findAll();
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    User findByVerificationCode(String verificationCode);
+    Optional<User> findByVerificationCode(String verificationCode);
 
     @Override
     @NonNull
-    Optional<User> findById(@NonNull Integer integer);
+    Optional<User> findById(@NonNull Integer id);
 
     @Override
-    void deleteById(@NonNull Integer userId);
+    void deleteById(@NonNull Integer id);
 }

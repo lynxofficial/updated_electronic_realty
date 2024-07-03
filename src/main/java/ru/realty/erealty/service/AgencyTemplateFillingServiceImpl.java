@@ -2,19 +2,16 @@ package ru.realty.erealty.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.realty.erealty.entity.Agency;
+import org.springframework.ui.Model;
 import ru.realty.erealty.repository.AgencyRepository;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AgencyServiceImpl implements AgencyService {
+public class AgencyTemplateFillingServiceImpl implements AgencyTemplateFillingService {
     private final AgencyRepository agencyRepository;
 
     @Override
-    public List<Agency> findAll() {
-        return agencyRepository.findAll();
+    public void fillAgencyTemplate(Model model) {
+        model.addAttribute("agencies", agencyRepository.findAll());
     }
-
 }
