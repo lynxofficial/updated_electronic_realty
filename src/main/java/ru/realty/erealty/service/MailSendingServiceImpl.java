@@ -15,7 +15,7 @@ import ru.realty.erealty.repository.UserRepository;
 @RequiredArgsConstructor
 public class MailSendingServiceImpl implements MailSendingService {
     private final JavaMailSender javaMailSender;
-    private final UserAttachmentImageMailService userAttachmentImageMailService;
+    private final FileHandlingAndAttachmentHttpService fileHandlingAndAttachmentHttpService;
     private final UserRepository userRepository;
     private final ResetTokenGenerationService resetTokenGenerationService;
 
@@ -41,7 +41,7 @@ public class MailSendingServiceImpl implements MailSendingService {
             System.out.println(siteUrl);
             content = content.replace("[[URL]]", siteUrl);
             helper.setText(content, true);
-            userAttachmentImageMailService.attachImageToMail(helper, defaultMailImagePath);
+            fileHandlingAndAttachmentHttpService.attachImageToMail(helper, defaultMailImagePath);
             new Thread(() -> javaMailSender.send(message)).start();
         } catch (Exception e) {
             System.out.println(e.getMessage());
