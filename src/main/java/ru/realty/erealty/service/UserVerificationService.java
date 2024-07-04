@@ -7,11 +7,7 @@ import java.time.LocalDateTime;
 
 public interface UserVerificationService {
 
-    void sendEmail(User user, String url, String defaultMailImagePath);
-
     Boolean verifyAccount(String verificationCode);
-
-    String sendEmail(User user);
 
     boolean hasExpired(LocalDateTime expiryDateTime);
 

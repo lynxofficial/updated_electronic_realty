@@ -36,8 +36,12 @@ public class RegistrationController {
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute User user, HttpSession httpSession, HttpServletRequest httpServletRequest,
-                           @Value("${default.mail.image.path}") String defaultImagePath) {
+    public String saveUser(
+            @ModelAttribute User user,
+            HttpSession httpSession,
+            HttpServletRequest httpServletRequest,
+            @Value("${default.mail.image.path}") String defaultImagePath
+    ) {
         userModificationService.saveUser(user, httpSession, httpServletRequest, defaultImagePath);
         return new ResponseEntity<>("redirect:/register", HttpStatus.OK).getBody();
     }

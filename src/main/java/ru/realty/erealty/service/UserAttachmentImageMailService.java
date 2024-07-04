@@ -6,5 +6,6 @@ import java.util.concurrent.ExecutionException;
 
 public interface UserAttachmentImageMailService {
 
-    void attachImageToMail(MimeMessageHelper mimeMessageHelper, String defaultMailImagePath) throws ExecutionException, InterruptedException;
+    void attachImageToMail(MimeMessageHelper mimeMessageHelper, String defaultMailImagePath)
+            throws ExecutionException, InterruptedException;
 }

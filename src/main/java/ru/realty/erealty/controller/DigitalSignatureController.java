@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.service.UserModificationService;
+import ru.realty.erealty.service.DigitalSignatureGenerationService;
 import ru.realty.erealty.service.UserSearchingService;
 
 import java.security.InvalidKeyException;
@@ -21,7 +21,7 @@ import java.security.SignatureException;
 @RequiredArgsConstructor
 public class DigitalSignatureController {
     private final UserSearchingService userSearchingService;
-    private final UserModificationService userModificationService;
+    private final DigitalSignatureGenerationService digitalSignatureGenerationService;
 
     @ModelAttribute
     public void commonUser(Principal principal, Model model) {
@@ -40,7 +40,7 @@ public class DigitalSignatureController {
     @PostMapping("/generateUserDigitalSignature")
     public String generateUserDigitalSignature(@ModelAttribute User user) throws
             NoSuchAlgorithmException, SignatureException, InvalidKeyException {
-        userModificationService.generateDigitalSignature(user.getPasswordForDigitalSignature(), user);
+        digitalSignatureGenerationService.generateDigitalSignature(user.getPasswordForDigitalSignature(), user);
         return new ResponseEntity<>("redirect:/user/profile", HttpStatus.OK).getBody();
     }
 }
