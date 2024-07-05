@@ -1,39 +1,32 @@
 package ru.realty.erealty.service;
 
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
-public class FileHandlingSystemService implements ImageHandlingService<Void, MimeMessageHelper> {
+public class FileHandlingSystemService implements ImageHandlingService<List<CompletableFuture<String>>,
+        MimeMessageHelper> {
     @Value("${default.image.links}")
     private final List<String> DEFAULT_IMAGE_LINKS;
     private final FileHandlingHttpResponseService fileHandlingHttpResponseService;
+    private final PreparingCompletableFutureAttachmentService preparingCompletableFutureAttachmentService;
 
     @Override
-    public Void attachImage(MimeMessageHelper messageHelper) {
-        List<CompletableFuture<String>> completableFutures = DEFAULT_IMAGE_LINKS.stream()
+    public List<CompletableFuture<String>> attachImage(MimeMessageHelper messageHelper) {
+        return DEFAULT_IMAGE_LINKS.stream()
                 .map(fileHandlingHttpResponseService::attachImage)
-                .peek(completableFuture -> {
-                    String value;
-                    try {
-                        value = completableFuture.get();
-                        messageHelper.addAttachment(value.substring(value.lastIndexOf('\\')),
-                                new File(value));
-                    } catch (InterruptedException | ExecutionException | MessagingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .peek(completableFuture -> preparingCompletableFutureAttachmentService
+                        .prepareCompletableFutureAttachment(completableFuture, messageHelper))
                 .toList();
-        CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0])).join();
-        return null;
+    }
+
+    public void runAsyncAttachImage(List<CompletableFuture<String>> completableFutures) {
+        CompletableFuture.allOf(completableFutures.toArray(CompletableFuture[]::new)).join();
     }
 }
