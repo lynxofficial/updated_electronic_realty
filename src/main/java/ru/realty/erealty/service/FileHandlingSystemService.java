@@ -19,9 +19,9 @@ public class FileHandlingSystemService implements ImageHandlingService<Void, Mim
     private final FileHandlingHttpResponseService fileHandlingHttpResponseService;
 
     @Override
-    public Void attachImage(MimeMessageHelper messageHelper, String defaultMailImagePath) {
+    public Void attachImage(MimeMessageHelper messageHelper) {
         List<CompletableFuture<String>> completableFutures = DEFAULT_IMAGE_LINKS.stream()
-                .map(imageLink -> fileHandlingHttpResponseService.attachImage(imageLink, defaultMailImagePath))
+                .map(fileHandlingHttpResponseService::attachImage)
                 .peek(completableFuture -> {
                     String value;
                     try {

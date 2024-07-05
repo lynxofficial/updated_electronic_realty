@@ -5,5 +5,5 @@ import java.io.IOException;
 
 public interface FileWritingService {
 
-    void writeFile(File file, String defaultMailImagePath) throws IOException;
+    void writeFile(File file) throws IOException;
 }

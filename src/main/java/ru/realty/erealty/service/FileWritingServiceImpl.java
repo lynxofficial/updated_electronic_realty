@@ -12,11 +12,11 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class FileWritingServiceImpl implements FileWritingService {
+    @Value("${default.mail.image.path}")
+    String defaultMailImagePath;
+
     @Override
-    public void writeFile(
-            File file,
-            @Value("${default.mail.image.path}") String defaultMailImagePath
-    ) throws IOException {
+    public void writeFile(File file) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(file);
         File outputFile = new File(defaultMailImagePath + "\\" + file.getName() + ".png");
         ImageIO.write(bufferedImage, "png", outputFile);

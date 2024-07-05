@@ -41,7 +41,7 @@ public class MailSendingServiceImpl implements MailSendingService {
             System.out.println(siteUrl);
             content = content.replace("[[URL]]", siteUrl);
             helper.setText(content, true);
-            fileHandlingSystemService.attachImage(helper, defaultMailImagePath);
+            fileHandlingSystemService.attachImage(helper);
             new Thread(() -> javaMailSender.send(message)).start();
         } catch (Exception e) {
             System.out.println(e.getMessage());

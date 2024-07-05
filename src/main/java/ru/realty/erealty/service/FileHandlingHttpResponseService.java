@@ -13,16 +13,17 @@ import java.util.concurrent.CompletableFuture;
 public class FileHandlingHttpResponseService implements ImageHandlingService<CompletableFuture<String>, String> {
     private final UserDownloadingFileHttpResponseService userDownloadingFileHttpResponseService;
     private final FileWritingService fileWritingService;
+    @Value("${default.mail.image.path}")
+    String defaultMailImagePath;
 
     @Override
     public CompletableFuture<String> attachImage(
-            String messageHelper,
-            @Value("${default.mail.image.path}") String defaultMailImagePath
+            String messageHelper
     ) {
         return CompletableFuture.supplyAsync(() -> {
             File file = userDownloadingFileHttpResponseService.downloadFileHttpResponse(messageHelper);
             try {
-                fileWritingService.writeFile(file, defaultMailImagePath);
+                fileWritingService.writeFile(file);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
