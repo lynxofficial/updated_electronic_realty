@@ -3,7 +3,6 @@ package ru.realty.erealty.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.realty.erealty.entity.RealtyObject;
@@ -47,8 +46,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     @Override
     public Optional<User> saveUser(
             User user,
-            String url,
-            @Value("${default.mail.image.path}") String defaultMailImagePath
+            String url
     ) {
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
@@ -56,17 +54,16 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
         user.setEnable(false);
         user.setVerificationCode(UUID.randomUUID().toString());
         User savedUser = userRepository.save(user);
-        new Thread(() -> mailSendingService.sendEmail(savedUser, url, defaultMailImagePath)).start();
+        new Thread(() -> mailSendingService.sendEmail(savedUser, url)).start();
         return Optional.of(savedUser);
     }
 
     @Override
-    public void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest,
-                         @Value("${default.mail.image.path}") String defaultMailImagePath) {
+    public void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest) {
         String url = httpServletRequest.getRequestURL().toString();
         url = url.replace(httpServletRequest.getServletPath(), "");
         user.setBalance(BigDecimal.ZERO);
-        Optional<User> savedUser = saveUser(user, url, defaultMailImagePath);
+        Optional<User> savedUser = saveUser(user, url);
         savedUser.ifPresentOrElse(value -> httpSession.setAttribute("msg", "Регистрация успешно выполнена!"),
                 () -> httpSession.setAttribute("msg", "Ошибка сервера"));
     }

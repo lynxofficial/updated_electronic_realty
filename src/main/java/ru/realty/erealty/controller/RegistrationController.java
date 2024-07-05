@@ -3,7 +3,6 @@ package ru.realty.erealty.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +38,9 @@ public class RegistrationController {
     public String saveUser(
             @ModelAttribute User user,
             HttpSession httpSession,
-            HttpServletRequest httpServletRequest,
-            @Value("${default.mail.image.path}") String defaultImagePath
+            HttpServletRequest httpServletRequest
     ) {
-        userModificationService.saveUser(user, httpSession, httpServletRequest, defaultImagePath);
+        userModificationService.saveUser(user, httpSession, httpServletRequest);
         return new ResponseEntity<>("redirect:/register", HttpStatus.OK).getBody();
     }
 

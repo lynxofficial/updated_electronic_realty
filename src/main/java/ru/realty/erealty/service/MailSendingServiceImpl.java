@@ -2,7 +2,6 @@ package ru.realty.erealty.service;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,15 +14,14 @@ import ru.realty.erealty.repository.UserRepository;
 @RequiredArgsConstructor
 public class MailSendingServiceImpl implements MailSendingService {
     private final JavaMailSender javaMailSender;
-    private final UserAttachmentImageMailService userAttachmentImageMailService;
+    private final FileHandlingSystemService fileHandlingSystemService;
     private final UserRepository userRepository;
     private final ResetTokenGenerationService resetTokenGenerationService;
 
     @Override
     public void sendEmail(
             User user,
-            String url,
-            @Value("${default.mail.image.path}") String defaultMailImagePath
+            String url
     ) {
         String from = "tester17591@yandex.ru";
         String to = user.getEmail();
@@ -41,7 +39,7 @@ public class MailSendingServiceImpl implements MailSendingService {
             System.out.println(siteUrl);
             content = content.replace("[[URL]]", siteUrl);
             helper.setText(content, true);
-            userAttachmentImageMailService.attachImageToMail(helper, defaultMailImagePath);
+            fileHandlingSystemService.runAsyncAttachImage(fileHandlingSystemService.attachImage(helper));
             new Thread(() -> javaMailSender.send(message)).start();
         } catch (Exception e) {
             System.out.println(e.getMessage());
