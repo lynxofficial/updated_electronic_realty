@@ -13,7 +13,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class FileWritingServiceImpl implements FileWritingService {
     @Value("${default.mail.image.path}")
-    String defaultMailImagePath;
+    private String defaultMailImagePath;
 
     @Override
     public void writeFile(File file) throws IOException {

@@ -14,7 +14,7 @@ public class FileHandlingHttpResponseService implements ImageHandlingService<Com
     private final UserDownloadingFileHttpResponseService userDownloadingFileHttpResponseService;
     private final FileWritingService fileWritingService;
     @Value("${default.mail.image.path}")
-    String defaultMailImagePath;
+    private String defaultMailImagePath;
 
     @Override
     public CompletableFuture<String> attachImage(
