@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 public class FileHandlingHttpResponseService implements ImageHandlingService<CompletableFuture<String>, String> {
     private final UserDownloadingFileHttpResponseService userDownloadingFileHttpResponseService;
     private final FileWritingService fileWritingService;
+
     @Value("${default.mail.image.path}")
     private String defaultMailImagePath;
 

@@ -2,7 +2,6 @@ package ru.realty.erealty.service;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,8 +21,7 @@ public class MailSendingServiceImpl implements MailSendingService {
     @Override
     public void sendEmail(
             User user,
-            String url,
-            @Value("${default.mail.image.path}") String defaultMailImagePath
+            String url
     ) {
         String from = "tester17591@yandex.ru";
         String to = user.getEmail();
