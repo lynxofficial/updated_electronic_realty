@@ -15,7 +15,6 @@ import ru.realty.erealty.repository.UserRepository;
 @RequiredArgsConstructor
 public class MailSendingServiceImpl implements MailSendingService {
     private final JavaMailSender javaMailSender;
-    //    private final FileHandlingAndAttachmentHttpService fileHandlingAndAttachmentHttpService;
     private final FileHandlingSystemService fileHandlingSystemService;
     private final UserRepository userRepository;
     private final ResetTokenGenerationService resetTokenGenerationService;
