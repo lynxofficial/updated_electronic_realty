@@ -31,27 +31,31 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf()
-                .disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/user/**")
-                .hasRole("USER")
-                .requestMatchers("/admin/**")
-                .hasRole("ADMIN")
-                .requestMatchers("/deleteRealtyObjects")
-                .hasRole("ADMIN")
-                .requestMatchers("/deleteUsers")
-                .hasRole("ADMIN")
-                .requestMatchers("/**")
-                .permitAll()
-                .and()
-                .formLogin()
-                .loginPage("/signIn")
-                .loginProcessingUrl("/userLogin")
-                .successHandler(customAuthSuccessHandler)
-                .permitAll();
-        return httpSecurity.build();
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
+        try {
+            httpSecurity
+                    .csrf()
+                    .disable()
+                    .authorizeHttpRequests()
+                    .requestMatchers("/user/**")
+                    .hasRole("USER")
+                    .requestMatchers("/admin/**")
+                    .hasRole("ADMIN")
+                    .requestMatchers("/deleteRealtyObjects")
+                    .hasRole("ADMIN")
+                    .requestMatchers("/deleteUsers")
+                    .hasRole("ADMIN")
+                    .requestMatchers("/**")
+                    .permitAll()
+                    .and()
+                    .formLogin()
+                    .loginPage("/signIn")
+                    .loginProcessingUrl("/userLogin")
+                    .successHandler(customAuthSuccessHandler)
+                    .permitAll();
+            return httpSecurity.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

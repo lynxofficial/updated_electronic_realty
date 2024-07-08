@@ -7,7 +7,8 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class UserDownloadingFileHttpResponseService {
     public File downloadFileHttpResponse(String imageLink) {
         return restTemplate.execute(imageLink, HttpMethod.GET, null, clientHttpResponse -> {
             File temporaryFile = File.createTempFile("image", "tmp");
-            StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(temporaryFile));
+            StreamUtils.copy(clientHttpResponse.getBody(), Files.newOutputStream(Path.of(temporaryFile.getPath())));
             return temporaryFile;
         });
     }

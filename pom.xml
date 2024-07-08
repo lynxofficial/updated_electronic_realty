@@ -99,6 +99,9 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>3.23.0</version>
                 <configuration>
+                    <rulesets>
+                        <ruleset>pmd-rules.xml</ruleset>
+                    </rulesets>
                     <printFailingErrors>true</printFailingErrors>
                 </configuration>
                 <executions>
@@ -133,7 +136,7 @@
                         <phase>validate</phase>
                         <configuration>
                             <configLocation>checkstyle.xml</configLocation>
-                            <encoding>UTF-8</encoding>
+                            <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>

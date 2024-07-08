@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- Пример настройки исключения
+    <suppress id="IllegalImportJavaIo" files="[\\/]src[\\/]main[\\/]java[\\/]ru[\\/]banki[\\/]mkp[\\/]commons[\\/]lib[\\/]json[\\/]schema[\\/]validation[\\/]misc[\\/]CachedHttpInputMessage.java"/>
+    -->
+</suppressions>

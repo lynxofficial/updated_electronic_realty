@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.service.*;
+import ru.realty.erealty.service.MailSendingService;
+import ru.realty.erealty.service.UserModificationService;
+import ru.realty.erealty.service.UserSearchingService;
+import ru.realty.erealty.service.UserVerificationService;
+import ru.realty.erealty.service.CustomTokenService;
 
 import java.security.Principal;
 
@@ -45,7 +49,7 @@ public class ResettingPasswordController {
         if (user1 != null) {
             output = mailSendingService.sendEmail(user);
         }
-        if (output.equals("success")) {
+        if ("success".equals(output)) {
             return new ResponseEntity<>("redirect:/register?success", HttpStatus.OK).getBody();
         }
         return new ResponseEntity<>("redirect:/signIn?error", HttpStatus.OK).getBody();

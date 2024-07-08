@@ -1,4 +1,7 @@
-FROM openjdk:17-jdk-alpine
-ARG JAR_FILE=target/*.jar
-COPY ./target/ElectronicRealty-1.0-SNAPSHOT.jar application.jar
-ENTRYPOINT ["java", "-jar", "/application.jar"]
+FROM maven:latest AS build
+COPY . /application
+WORKDIR /application
+RUN mvn clean package
+FROM openjdk:21
+COPY --from=build /application/target/*.jar /application.jar
+CMD ["java", "-jar", "/application.jar"]
