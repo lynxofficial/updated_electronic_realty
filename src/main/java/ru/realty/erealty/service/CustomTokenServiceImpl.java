@@ -11,7 +11,7 @@ public class CustomTokenServiceImpl implements CustomTokenService {
     private final CustomTokenRepository customTokenRepository;
 
     @Override
-    public PasswordResetToken findByToken(String token) {
+    public PasswordResetToken findByToken(final String token) {
         return customTokenRepository.findByToken(token);
     }
 }

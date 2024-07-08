@@ -15,7 +15,7 @@ import java.nio.file.Path;
 public class UserDownloadingFileHttpResponseService {
     private final RestTemplate restTemplate;
 
-    public File downloadFileHttpResponse(String imageLink) {
+    public File downloadFileHttpResponse(final String imageLink) {
         return restTemplate.execute(imageLink, HttpMethod.GET, null, clientHttpResponse -> {
             File temporaryFile = File.createTempFile("image", "tmp");
             StreamUtils.copy(clientHttpResponse.getBody(), Files.newOutputStream(Path.of(temporaryFile.getPath())));

@@ -26,7 +26,7 @@ public class RegistrationController {
     private final RegistrationTemplateFillingService registrationTemplateFillingService;
 
     @ModelAttribute
-    public void commonUser(Principal principal, Model model) {
+    public void commonUser(final Principal principal, final Model model) {
         if (principal != null) {
             String email = principal.getName();
             User user = userSearchingService.findByEmail(email);
@@ -36,16 +36,16 @@ public class RegistrationController {
 
     @PostMapping("/saveUser")
     public String saveUser(
-            @ModelAttribute User user,
-            HttpSession httpSession,
-            HttpServletRequest httpServletRequest
+            final @ModelAttribute User user,
+            final HttpSession httpSession,
+            final HttpServletRequest httpServletRequest
     ) {
         userModificationService.saveUser(user, httpSession, httpServletRequest);
         return new ResponseEntity<>("redirect:/register", HttpStatus.OK).getBody();
     }
 
     @GetMapping("/verify")
-    public String verifyAccount(@Param("code") String code, Model model) {
+    public String verifyAccount(final @Param("code") String code, final Model model) {
         registrationTemplateFillingService.fillRegistrationTemplate(code, model);
         return new ResponseEntity<>("message", HttpStatus.OK).getBody();
     }

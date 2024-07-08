@@ -24,7 +24,7 @@ public class DigitalSignatureController {
     private final DigitalSignatureGenerationService digitalSignatureGenerationService;
 
     @ModelAttribute
-    public void commonUser(Principal principal, Model model) {
+    public void commonUser(final Principal principal, final Model model) {
         if (principal != null) {
             String email = principal.getName();
             User user = userSearchingService.findByEmail(email);
@@ -38,7 +38,7 @@ public class DigitalSignatureController {
     }
 
     @PostMapping("/generateUserDigitalSignature")
-    public String generateUserDigitalSignature(@ModelAttribute User user) throws
+    public String generateUserDigitalSignature(final @ModelAttribute User user) throws
             NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         digitalSignatureGenerationService.generateDigitalSignature(user.getPasswordForDigitalSignature(), user);
         return new ResponseEntity<>("redirect:/user/profile", HttpStatus.OK).getBody();

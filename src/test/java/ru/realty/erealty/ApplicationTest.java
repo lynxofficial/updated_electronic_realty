@@ -13,7 +13,7 @@ public class ApplicationTest extends TestCase {
      *
      * @param testName name of the test case
      */
-    public ApplicationTest(String testName) {
+    public ApplicationTest(final String testName) {
         super(testName);
     }
 

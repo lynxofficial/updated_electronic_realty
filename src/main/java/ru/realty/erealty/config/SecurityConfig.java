@@ -15,7 +15,7 @@ import ru.realty.erealty.repository.UserRepository;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserRepository userRepository;
-    public final CustomAuthSuccessHandler customAuthSuccessHandler;
+    private final CustomAuthSuccessHandler customAuthSuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -31,7 +31,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) {
         try {
             httpSecurity
                     .csrf()

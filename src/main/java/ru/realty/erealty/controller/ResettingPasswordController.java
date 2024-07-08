@@ -29,7 +29,7 @@ public class ResettingPasswordController {
     private final MailSendingService mailSendingService;
 
     @ModelAttribute
-    public void commonUser(Principal principal, Model model) {
+    public void commonUser(final Principal principal, final Model model) {
         if (principal != null) {
             String email = principal.getName();
             User user = userSearchingService.findByEmail(email);
@@ -43,7 +43,7 @@ public class ResettingPasswordController {
     }
 
     @PostMapping("/forgotPassword")
-    public String forgotPasswordProcess(@ModelAttribute User user) {
+    public String forgotPasswordProcess(final @ModelAttribute User user) {
         String output = "";
         User user1 = userSearchingService.findByEmail(user.getEmail());
         if (user1 != null) {
@@ -56,7 +56,7 @@ public class ResettingPasswordController {
     }
 
     @GetMapping("/resetPassword/{token}")
-    public String resetPasswordForm(@PathVariable String token, Model model) {
+    public String resetPasswordForm(final @PathVariable String token, final Model model) {
         PasswordResetToken reset = customTokenService.findByToken(token);
         if (reset != null && userVerificationService.hasExpired(reset.getExpiryDateTime())) {
             model.addAttribute("email", reset.getUser().getEmail());
@@ -66,7 +66,7 @@ public class ResettingPasswordController {
     }
 
     @PostMapping("/resetPassword")
-    public String resetPasswordProcess(@ModelAttribute User user) {
+    public String resetPasswordProcess(final @ModelAttribute User user) {
         userModificationService.resetPasswordProcess(user);
         return new ResponseEntity<>("redirect:/signIn", HttpStatus.OK).getBody();
     }

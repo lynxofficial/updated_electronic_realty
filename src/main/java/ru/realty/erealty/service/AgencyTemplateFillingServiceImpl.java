@@ -11,7 +11,7 @@ public class AgencyTemplateFillingServiceImpl implements AgencyTemplateFillingSe
     private final AgencyRepository agencyRepository;
 
     @Override
-    public void fillAgencyTemplate(Model model) {
+    public void fillAgencyTemplate(final Model model) {
         model.addAttribute("agencies", agencyRepository.findAll());
     }
 }

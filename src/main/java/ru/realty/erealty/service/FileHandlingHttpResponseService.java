@@ -19,7 +19,7 @@ public class FileHandlingHttpResponseService implements ImageHandlingService<Com
 
     @Override
     public CompletableFuture<String> attachImage(
-            String messageHelper
+            final String messageHelper
     ) {
         return CompletableFuture.supplyAsync(() -> {
             File file = userDownloadingFileHttpResponseService.downloadFileHttpResponse(messageHelper);

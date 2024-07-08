@@ -16,7 +16,7 @@ public class FileWritingServiceImpl implements FileWritingService {
     private String defaultMailImagePath;
 
     @Override
-    public void writeFile(File file) throws IOException {
+    public void writeFile(final File file) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(file);
         File outputFile = new File(defaultMailImagePath + "\\" + file.getName() + ".png");
         ImageIO.write(bufferedImage, "png", outputFile);

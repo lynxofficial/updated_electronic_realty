@@ -13,8 +13,8 @@ import java.util.concurrent.ExecutionException;
 @NoArgsConstructor
 public class PreparingCompletableFutureAttachmentService {
     public void prepareCompletableFutureAttachment(
-            CompletableFuture<String> completableFuture,
-            MimeMessageHelper messageHelper
+            final CompletableFuture<String> completableFuture,
+            final MimeMessageHelper messageHelper
     ) {
         String value;
         try {

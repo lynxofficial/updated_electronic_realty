@@ -20,8 +20,8 @@ public class MailSendingServiceImpl implements MailSendingService {
 
     @Override
     public void sendEmail(
-            User user,
-            String url
+            final User user,
+            final String url
     ) {
         String from = "tester17591@yandex.ru";
         String to = user.getEmail();
@@ -46,7 +46,7 @@ public class MailSendingServiceImpl implements MailSendingService {
     }
 
     @Override
-    public String sendEmail(User user) {
+    public String sendEmail(final User user) {
         try {
             User currentUser = userRepository
                     .findByEmail(user.getEmail())
@@ -56,8 +56,8 @@ public class MailSendingServiceImpl implements MailSendingService {
             simpleMailMessage.setFrom("tester17591@yandex.ru");
             simpleMailMessage.setTo(currentUser.getEmail());
             simpleMailMessage.setSubject("Сброс пароля");
-            simpleMailMessage.setText("Здравствуйте \n\n" + "Пожалуйста, кликните на эту ссылку для сброса пароля:" +
-                    resetLink + ". \n\n" + "С уважением \n" + "Egor");
+            simpleMailMessage.setText("Здравствуйте \n\n" + "Пожалуйста, кликните на эту ссылку для сброса пароля:"
+                    + resetLink + ". \n\n" + "С уважением \n" + "Egor");
             new Thread(() -> javaMailSender.send(simpleMailMessage)).start();
             return "success";
         } catch (Exception e) {

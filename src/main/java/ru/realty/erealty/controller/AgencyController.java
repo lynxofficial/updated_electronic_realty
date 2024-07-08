@@ -20,7 +20,7 @@ public class AgencyController {
     private final AgencyTemplateFillingService agencyTemplateFillingService;
 
     @ModelAttribute
-    public void commonUser(Principal principal, Model model) {
+    public void commonUser(final Principal principal, final Model model) {
         if (principal != null) {
             String email = principal.getName();
             User user = userSearchingService.findByEmail(email);
@@ -29,7 +29,7 @@ public class AgencyController {
     }
 
     @GetMapping("/agencies")
-    public String getAllAgencies(Model model) {
+    public String getAllAgencies(final Model model) {
         agencyTemplateFillingService.fillAgencyTemplate(model);
         return new ResponseEntity<>("agencies", HttpStatus.OK).getBody();
     }

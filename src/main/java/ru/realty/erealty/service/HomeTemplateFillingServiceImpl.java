@@ -11,7 +11,7 @@ public class HomeTemplateFillingServiceImpl implements HomeTemplateFillingServic
     private final RealtyObjectRepository realtyObjectRepository;
 
     @Override
-    public void fillHomeTemplate(Model model) {
+    public void fillHomeTemplate(final Model model) {
         model.addAttribute("realtyObjects", realtyObjectRepository.findAll());
     }
 }

@@ -15,7 +15,7 @@ public class ResetTokenGenerationServiceImpl implements ResetTokenGenerationServ
     private final CustomTokenRepository customTokenRepository;
 
     @Override
-    public String generateResetToken(User user) {
+    public String generateResetToken(final User user) {
         UUID uuid = UUID.randomUUID();
         LocalDateTime currentDateTime = LocalDateTime.now();
         LocalDateTime expiryDateTime = currentDateTime.plusMinutes(30);

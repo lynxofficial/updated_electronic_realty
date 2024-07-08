@@ -20,7 +20,7 @@ public class AdminController {
     private final UserSearchingService userSearchingService;
 
     @ModelAttribute
-    public void commonUser(Principal principal, Model model) {
+    public void commonUser(final Principal principal, final Model model) {
         if (principal != null) {
             String email = principal.getName();
             User user = userSearchingService.findByEmail(email);
