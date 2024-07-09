@@ -22,7 +22,7 @@ public class RealtyObjectTemplateFillingServiceImpl implements RealtyObjectTempl
     private final UserRepository userRepository;
 
     @Override
-    public void fillRealtyObjectTemplate(Model model) {
+    public void fillRealtyObjectTemplate(final Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)
@@ -32,12 +32,13 @@ public class RealtyObjectTemplateFillingServiceImpl implements RealtyObjectTempl
     }
 
     @Override
-    public void fillBuyRealtyObjectTemplate(Model model, String realtyObjectId) throws RealtyObjectNotFoundException {
+    public void fillBuyRealtyObjectTemplate(final Model model, final String realtyObjectId)
+            throws RealtyObjectNotFoundException {
         model.addAttribute("realtyObject", realtyObjectService.buyRealtyObject(realtyObjectId));
     }
 
     @Override
-    public void fillDeleteRealtyObjectsTemplate(Model model) {
+    public void fillDeleteRealtyObjectsTemplate(final Model model) {
         model.addAttribute("realtyObjects", realtyObjectRepository.findAll());
     }
 }

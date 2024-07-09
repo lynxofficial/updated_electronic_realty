@@ -32,21 +32,21 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
-    public User findByEmail(String email) {
+    public User findByEmail(final String email) {
         return userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void deleteById(final Integer id) {
         userRepository.deleteById(id);
     }
 
     @Override
     public Optional<User> saveUser(
-            User user,
-            String url
+            final User user,
+            final String url
     ) {
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
@@ -59,7 +59,11 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
-    public void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest) {
+    public void saveUser(
+            final User user,
+            final HttpSession httpSession,
+            final HttpServletRequest httpServletRequest
+    ) {
         String url = httpServletRequest.getRequestURL().toString();
         url = url.replace(httpServletRequest.getServletPath(), "");
         user.setBalance(BigDecimal.ZERO);
@@ -76,13 +80,13 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
-    public boolean hasExpired(LocalDateTime expiryDateTime) {
+    public boolean hasExpired(final LocalDateTime expiryDateTime) {
         LocalDateTime localDateTime = LocalDateTime.now();
         return expiryDateTime.isAfter(localDateTime);
     }
 
     @Override
-    public Boolean verifyAccount(String verificationCode) {
+    public Boolean verifyAccount(final String verificationCode) {
         User user = userRepository.findByVerificationCode(verificationCode)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         user.setEnable(true);
@@ -92,7 +96,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
-    public void resetPasswordProcess(User user) {
+    public void resetPasswordProcess(final User user) {
         User currentUser = userRepository
                 .findByEmail(user.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
@@ -101,8 +105,11 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
-    public Boolean isNotPositiveBalanceOrExistsDigitalSignature(User currentUser, User targetUser,
-                                                                RealtyObject currentRealtyObject) {
+    public Boolean isNotPositiveBalanceOrExistsDigitalSignature(
+            final User currentUser,
+            final User targetUser,
+            final RealtyObject currentRealtyObject
+    ) {
         return currentUser.getBalance().subtract(currentRealtyObject.getPrice()).compareTo(BigDecimal.ZERO) < 0
                 || currentUser.getDigitalSignature() == null
                 || currentUser.getUserId().equals(targetUser.getUserId());

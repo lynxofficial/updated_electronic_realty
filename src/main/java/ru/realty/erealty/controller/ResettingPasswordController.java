@@ -11,7 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.service.*;
+import ru.realty.erealty.service.CustomTokenService;
+import ru.realty.erealty.service.UserModificationService;
+import ru.realty.erealty.service.UserSearchingService;
+import ru.realty.erealty.service.UserVerificationService;
+import ru.realty.erealty.service.MailSendingService;
+import ru.realty.erealty.service.CommonUserAuthorizationService;
 
 import java.security.Principal;
 
@@ -23,14 +28,11 @@ public class ResettingPasswordController {
     private final UserModificationService userModificationService;
     private final CustomTokenService customTokenService;
     private final MailSendingService mailSendingService;
+    private final CommonUserAuthorizationService commonUserAuthorizationService;
 
     @ModelAttribute
-    public void commonUser(Principal principal, Model model) {
-        if (principal != null) {
-            String email = principal.getName();
-            User user = userSearchingService.findByEmail(email);
-            model.addAttribute("user", user);
-        }
+    public void commonUser(final Principal principal, final Model model) {
+        commonUserAuthorizationService.setCommonUser(principal, model);
     }
 
     @GetMapping("/forgotPassword")
@@ -39,20 +41,20 @@ public class ResettingPasswordController {
     }
 
     @PostMapping("/forgotPassword")
-    public String forgotPasswordProcess(@ModelAttribute User user) {
+    public String forgotPasswordProcess(final @ModelAttribute User user) {
         String output = "";
         User user1 = userSearchingService.findByEmail(user.getEmail());
         if (user1 != null) {
             output = mailSendingService.sendEmail(user);
         }
-        if (output.equals("success")) {
+        if ("success".equals(output)) {
             return new ResponseEntity<>("redirect:/register?success", HttpStatus.OK).getBody();
         }
         return new ResponseEntity<>("redirect:/signIn?error", HttpStatus.OK).getBody();
     }
 
     @GetMapping("/resetPassword/{token}")
-    public String resetPasswordForm(@PathVariable String token, Model model) {
+    public String resetPasswordForm(final @PathVariable String token, final Model model) {
         PasswordResetToken reset = customTokenService.findByToken(token);
         if (reset != null && userVerificationService.hasExpired(reset.getExpiryDateTime())) {
             model.addAttribute("email", reset.getUser().getEmail());
@@ -62,7 +64,7 @@ public class ResettingPasswordController {
     }
 
     @PostMapping("/resetPassword")
-    public String resetPasswordProcess(@ModelAttribute User user) {
+    public String resetPasswordProcess(final @ModelAttribute User user) {
         userModificationService.resetPasswordProcess(user);
         return new ResponseEntity<>("redirect:/signIn", HttpStatus.OK).getBody();
     }

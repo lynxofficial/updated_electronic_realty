@@ -6,7 +6,13 @@ import ru.realty.erealty.entity.User;
 import ru.realty.erealty.repository.UserRepository;
 
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.SecureRandom;
+import java.security.KeyPairGenerator;
+import java.security.KeyPair;
 
 @Service
 @RequiredArgsConstructor
@@ -14,7 +20,8 @@ public class DigitalSignatureGenerationServiceImpl implements DigitalSignatureGe
     private final UserRepository userRepository;
 
     @Override
-    public void generateDigitalSignature(String passwordForDigitalSignature, User user) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    public void generateDigitalSignature(final String passwordForDigitalSignature, final User user)
+            throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature signature = Signature.getInstance("SHA256WithDSA");
         SecureRandom secureRandom = new SecureRandom();
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DSA");

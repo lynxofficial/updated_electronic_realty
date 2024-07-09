@@ -11,7 +11,7 @@ public class UserTemplateFillingServiceImpl implements UserTemplateFillingServic
     private final UserRepository userRepository;
 
     @Override
-    public void fillDeleteUserTemplate(Model model) {
+    public void fillDeleteUserTemplate(final Model model) {
         model.addAttribute("users", userRepository.findAll());
     }
 }

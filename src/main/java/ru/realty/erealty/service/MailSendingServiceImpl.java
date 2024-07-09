@@ -20,8 +20,8 @@ public class MailSendingServiceImpl implements MailSendingService {
 
     @Override
     public void sendEmail(
-            User user,
-            String url
+            final User user,
+            final String url
     ) {
         String from = "tester17591@yandex.ru";
         String to = user.getEmail();
@@ -36,18 +36,17 @@ public class MailSendingServiceImpl implements MailSendingService {
             helper.setSubject(subject);
             content = content.replace("[[name]]", user.getFullName());
             String siteUrl = url + "/verify?code=" + user.getVerificationCode();
-            System.out.println(siteUrl);
             content = content.replace("[[URL]]", siteUrl);
             helper.setText(content, true);
             fileHandlingSystemService.runAsyncAttachImage(fileHandlingSystemService.attachImage(helper));
             new Thread(() -> javaMailSender.send(message)).start();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public String sendEmail(User user) {
+    public String sendEmail(final User user) {
         try {
             User currentUser = userRepository
                     .findByEmail(user.getEmail())
@@ -57,14 +56,12 @@ public class MailSendingServiceImpl implements MailSendingService {
             simpleMailMessage.setFrom("tester17591@yandex.ru");
             simpleMailMessage.setTo(currentUser.getEmail());
             simpleMailMessage.setSubject("Сброс пароля");
-            simpleMailMessage.setText("Здравствуйте \n\n" + "Пожалуйста, кликните на эту ссылку для сброса пароля:" +
-                    resetLink + ". \n\n" + "С уважением \n" + "Egor");
-            System.out.println(resetLink);
+            simpleMailMessage.setText("Здравствуйте \n\n" + "Пожалуйста, кликните на эту ссылку для сброса пароля:"
+                    + resetLink + ". \n\n" + "С уважением \n" + "Egor");
             new Thread(() -> javaMailSender.send(simpleMailMessage)).start();
             return "success";
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return "error";
+            throw new RuntimeException(e);
         }
     }
 }

@@ -34,18 +34,23 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     }
 
     @Override
-    public RealtyObject buyRealtyObject(String realtyObjectId) throws RealtyObjectNotFoundException {
+    public RealtyObject buyRealtyObject(final String realtyObjectId) throws RealtyObjectNotFoundException {
         return realtyObjectRepository.findById(Integer.valueOf(realtyObjectId))
                 .orElseThrow(() -> new RealtyObjectNotFoundException("Объект недвижимости не найден"));
     }
 
     @Override
-    public void sellRealtyObject(User user, RealtyObject realtyObject, MultipartFile file,
-                                 @Value("${default.image.path}") String defaultImagePath) throws IOException {
+    public void sellRealtyObject(
+            final User user,
+            final RealtyObject realtyObject,
+            final MultipartFile file,
+            final @Value("${default.image.path}") String defaultImagePath) throws IOException {
         realtyObject.setUser(user);
         Path fileNameAndPath = Paths.get(defaultImagePath, file.getOriginalFilename());
         Files.write(fileNameAndPath, file.getBytes());
-        realtyObject.setImageUrl(fileNameAndPath.getFileName().toString());
+        Optional.of(fileNameAndPath)
+                .map(Path::toString)
+                .ifPresent(realtyObject::setImageUrl);
         if (realtyObject.getPrice() == null) {
             realtyObject.setPrice(BigDecimal.ZERO);
         }
@@ -53,7 +58,8 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     }
 
     @Override
-    public Boolean buyRealtyObjectWithDigitalSignature(RealtyObject realtyObject) throws RealtyObjectNotFoundException {
+    public Boolean buyRealtyObjectWithDigitalSignature(final RealtyObject realtyObject)
+            throws RealtyObjectNotFoundException {
         Optional<RealtyObject> optionalRealtyObject = realtyObjectRepository.findById(realtyObject.getRealtyObjectId());
         RealtyObject currentRealtyObject = optionalRealtyObject
                 .orElseThrow(() -> new RealtyObjectNotFoundException("Объект недвижимости не найден"));
@@ -81,9 +87,8 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
         return true;
     }
 
-
     @Override
-    public void deleteRealtyObject(RealtyObject realtyObject) throws RealtyObjectNotFoundException {
+    public void deleteRealtyObject(final RealtyObject realtyObject) throws RealtyObjectNotFoundException {
         RealtyObject currentRealtyObject = realtyObjectRepository.findById(realtyObject.getRealtyObjectId())
                 .orElseThrow(() -> new RealtyObjectNotFoundException("Объект недвижимости не найден"));
         User user = currentRealtyObject.getUser();
