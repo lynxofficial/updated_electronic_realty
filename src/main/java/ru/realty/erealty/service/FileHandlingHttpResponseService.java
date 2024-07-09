@@ -18,9 +18,7 @@ public class FileHandlingHttpResponseService implements ImageHandlingService<Com
     private String defaultMailImagePath;
 
     @Override
-    public CompletableFuture<String> attachImage(
-            final String messageHelper
-    ) {
+    public CompletableFuture<String> attachImage(final String messageHelper) {
         return CompletableFuture.supplyAsync(() -> {
             File file = userDownloadingFileHttpResponseService.downloadFileHttpResponse(messageHelper);
             try {
