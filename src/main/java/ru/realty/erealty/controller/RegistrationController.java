@@ -12,26 +12,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.realty.erealty.entity.User;
+import ru.realty.erealty.service.CommonUserAuthorizationService;
 import ru.realty.erealty.service.RegistrationTemplateFillingService;
 import ru.realty.erealty.service.UserModificationService;
-import ru.realty.erealty.service.UserSearchingService;
 
 import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
 public class RegistrationController {
-    private final UserSearchingService userSearchingService;
     private final UserModificationService userModificationService;
     private final RegistrationTemplateFillingService registrationTemplateFillingService;
+    private final CommonUserAuthorizationService commonUserAuthorizationService;
 
     @ModelAttribute
     public void commonUser(final Principal principal, final Model model) {
-        if (principal != null) {
-            String email = principal.getName();
-            User user = userSearchingService.findByEmail(email);
-            model.addAttribute("user", user);
-        }
+        commonUserAuthorizationService.setCommonUser(principal, model);
     }
 
     @PostMapping("/saveUser")

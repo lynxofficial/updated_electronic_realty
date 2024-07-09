@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.realty.erealty.entity.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import ru.realty.erealty.service.CommonUserAuthorizationService;
 import ru.realty.erealty.service.UserModificationService;
-import ru.realty.erealty.service.UserSearchingService;
 import ru.realty.erealty.service.UserTemplateFillingService;
 
 import java.security.Principal;
@@ -19,17 +18,13 @@ import java.security.Principal;
 @Controller
 @RequiredArgsConstructor
 public class UserController {
-    private final UserSearchingService userSearchingService;
     private final UserModificationService userModificationService;
     private final UserTemplateFillingService userTemplateFillingService;
+    private final CommonUserAuthorizationService commonUserAuthorizationService;
 
     @ModelAttribute
     public void commonUser(final Principal principal, final Model model) {
-        if (principal != null) {
-            String email = principal.getName();
-            User user = userSearchingService.findByEmail(email);
-            model.addAttribute("user", user);
-        }
+        commonUserAuthorizationService.setCommonUser(principal, model);
     }
 
     @GetMapping("/user/profile")

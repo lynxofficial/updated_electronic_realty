@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.service.MailSendingService;
+import ru.realty.erealty.service.CustomTokenService;
 import ru.realty.erealty.service.UserModificationService;
 import ru.realty.erealty.service.UserSearchingService;
 import ru.realty.erealty.service.UserVerificationService;
-import ru.realty.erealty.service.CustomTokenService;
+import ru.realty.erealty.service.MailSendingService;
+import ru.realty.erealty.service.CommonUserAuthorizationService;
 
 import java.security.Principal;
 
@@ -27,14 +28,11 @@ public class ResettingPasswordController {
     private final UserModificationService userModificationService;
     private final CustomTokenService customTokenService;
     private final MailSendingService mailSendingService;
+    private final CommonUserAuthorizationService commonUserAuthorizationService;
 
     @ModelAttribute
     public void commonUser(final Principal principal, final Model model) {
-        if (principal != null) {
-            String email = principal.getName();
-            User user = userSearchingService.findByEmail(email);
-            model.addAttribute("user", user);
-        }
+        commonUserAuthorizationService.setCommonUser(principal, model);
     }
 
     @GetMapping("/forgotPassword")

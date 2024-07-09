@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.exception.RealtyObjectNotFoundException;
+import ru.realty.erealty.service.CommonUserAuthorizationService;
 import ru.realty.erealty.service.RealtyObjectService;
 import ru.realty.erealty.service.RealtyObjectTemplateFillingService;
 import ru.realty.erealty.service.UserSearchingService;
@@ -31,14 +32,11 @@ public class RealtyObjectController {
     private final UserSearchingService userSearchingService;
     private final RealtyObjectService realtyObjectService;
     private final RealtyObjectTemplateFillingService realtyObjectTemplateFillingService;
+    private final CommonUserAuthorizationService commonUserAuthorizationService;
 
     @ModelAttribute
     public void commonUser(final Principal principal, final Model model) {
-        if (principal != null) {
-            String email = principal.getName();
-            User user = userSearchingService.findByEmail(email);
-            model.addAttribute("user", user);
-        }
+        commonUserAuthorizationService.setCommonUser(principal, model);
     }
 
     @GetMapping("/realtyObject")

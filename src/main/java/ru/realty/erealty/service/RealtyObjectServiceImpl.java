@@ -48,7 +48,9 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
         realtyObject.setUser(user);
         Path fileNameAndPath = Paths.get(defaultImagePath, file.getOriginalFilename());
         Files.write(fileNameAndPath, file.getBytes());
-        realtyObject.setImageUrl(fileNameAndPath.getFileName().toString());
+        Optional.of(fileNameAndPath)
+                .map(Path::toString)
+                .ifPresent(realtyObject::setImageUrl);
         if (realtyObject.getPrice() == null) {
             realtyObject.setPrice(BigDecimal.ZERO);
         }
