@@ -1,7 +1,6 @@
 package ru.realty.erealty.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -58,13 +57,12 @@ public class RealtyObjectController {
     @PostMapping("/sellRealtyObject")
     public String sellRealtyObject(
             final @ModelAttribute RealtyObject realtyObject,
-            final @RequestParam("image") MultipartFile file,
-            final @Value("${default.image.path}") String defaultImagePath
+            final @RequestParam("image") MultipartFile file
     ) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userSearchingService.findByEmail(email);
-        realtyObjectService.sellRealtyObject(user, realtyObject, file, defaultImagePath);
+        realtyObjectService.sellRealtyObject(user, realtyObject, file);
         return new ResponseEntity<>("redirect:/myRealtyObjects", HttpStatus.OK).getBody();
     }
 

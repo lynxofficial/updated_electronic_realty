@@ -15,7 +15,6 @@ class AgencyTemplateFillingServiceImplTest extends BaseSpringBootTest {
         Mockito.when(agencyRepository.findAll()).thenReturn(List.of(new Agency(), new Agency()));
         Model model = new ExtendedModelMap();
         agencyTemplateFillingServiceImpl.fillAgencyTemplate(model);
-        System.out.println(model.getAttribute("agencies"));
         Assertions.assertTrue(model.containsAttribute("agencies"));
     }
 }

@@ -1,39 +1,40 @@
 package ru.realty.erealty.service;
 
-import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.realty.erealty.entity.User;
+
+import java.time.Duration;
+import java.util.Optional;
 
 class MailSendingServiceImplTest extends BaseSpringBootTest {
     @SneakyThrows
     @Test
-    void sendEmailWithUrlThrowsException() {
+    void sendEmailWithUrlShouldWork() {
         User user = new User();
         user.setEmail("test@test.com");
         user.setFullName("Test test test");
         user.setVerificationCode("12345");
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        String from = "tester17591@yandex.ru";
-        String subject = "Подтверждение аккаунта";
-        String content = "Дорогой [[name]],<br>" + "Пожалуйста, перейдите по ссылке для подтверждения аккаунта:<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">ПОДТВЕРДИТЬ</a></h3>" + "Спасибо,<br>" + "Egor";
-        String to = user.getEmail();
-        helper.setFrom(from, "Egor");
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(content, true);
-        Mockito.doNothing()
-                .when(mimeMessageHelper)
-                .setTo(to);
-        Mockito.doNothing()
-                .when(mimeMessageHelper)
-                .setFrom(from);
         String url = "test.com";
-        Assertions.assertThrows(RuntimeException.class, () -> mailSendingServiceImpl.sendEmail(user, url));
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(5L))
+                .untilAsserted(() -> mailSendingServiceImpl.sendEmail(user, url));
+    }
+
+    @Test
+    void sendEmailWithCurrentUserForResettingPasswordShouldWork() {
+        User user = new User();
+        user.setEmail("test@test.com");
+        Mockito.when(userRepository.findByEmail(user.getEmail()))
+                .thenReturn(Optional.of(user));
+        User currentUser = userRepository
+                .findByEmail(user.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(5L))
+                .untilAsserted(() -> mailSendingServiceImpl.sendEmail(currentUser));
     }
 }

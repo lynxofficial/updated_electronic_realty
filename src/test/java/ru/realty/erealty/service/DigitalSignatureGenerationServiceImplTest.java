@@ -12,8 +12,8 @@ class DigitalSignatureGenerationServiceImplTest extends BaseSpringBootTest {
     @Test
     @SneakyThrows
     void generateDigitalSignatureShouldWork() {
-        final String passwordForDigitalSignature = "123";
-        final User user = new User();
+        String passwordForDigitalSignature = "123";
+        User user = new User();
         user.setEmail("123@mail.ru");
         Mockito.when(userRepository.findByEmail("123@mail.ru")).thenReturn(Optional.of(user));
         digitalSignatureGenerationServiceImpl.generateDigitalSignature(passwordForDigitalSignature, user);

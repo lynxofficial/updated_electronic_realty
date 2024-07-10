@@ -28,6 +28,9 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     private final UserRepository userRepository;
     private final UserVerificationService userVerificationService;
 
+    @Value("${default.image.path}")
+    private String defaultImagePath;
+
     @Override
     public List<RealtyObject> findAll() {
         return realtyObjectRepository.findAll();
@@ -43,8 +46,8 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     public void sellRealtyObject(
             final User user,
             final RealtyObject realtyObject,
-            final MultipartFile file,
-            final @Value("${default.image.path}") String defaultImagePath) throws IOException {
+            final MultipartFile file
+    ) throws IOException {
         realtyObject.setUser(user);
         Path fileNameAndPath = Paths.get(defaultImagePath, file.getOriginalFilename());
         Files.write(fileNameAndPath, file.getBytes());

@@ -17,9 +17,8 @@ class CommonUserAuthorizationServiceTest extends BaseSpringBootTest {
         User user = new User();
         user.setEmail("test@test.com");
         Mockito.when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
-        Mockito.when(userServiceImpl.findByEmail("test@test.com")).thenReturn(user);
         Principal principal = new KerberosPrincipal("test@test.com");
-        final Model model = new ExtendedModelMap();
+        Model model = new ExtendedModelMap();
         commonUserAuthorizationService.setCommonUser(principal, model);
         Assertions.assertTrue(model.containsAttribute("user"));
     }

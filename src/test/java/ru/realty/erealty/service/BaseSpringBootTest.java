@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import ru.realty.erealty.repository.AgencyRepository;
 import ru.realty.erealty.repository.CustomTokenRepository;
 import ru.realty.erealty.repository.RealtyObjectRepository;
@@ -17,23 +16,25 @@ import ru.realty.erealty.repository.UserRepository;
 public abstract class BaseSpringBootTest {
     @MockBean
     protected AgencyRepository agencyRepository;
+    @MockBean
+    protected CustomTokenRepository customTokenRepository;
+    @MockBean
+    protected RealtyObjectRepository realtyObjectRepository;
     @Autowired
     protected AgencyServiceImpl agencyServiceImpl;
     @Autowired
     protected AgencyTemplateFillingServiceImpl agencyTemplateFillingServiceImpl;
     @MockBean
     protected UserRepository userRepository;
-    @MockBean
+    @Autowired
     protected UserServiceImpl userServiceImpl;
     @Autowired
     protected CommonUserAuthorizationService commonUserAuthorizationService;
-    @MockBean
-    protected CustomTokenRepository customTokenRepository;
     @Autowired
     protected CustomTokenServiceImpl customTokenServiceImpl;
     @Autowired
     protected DigitalSignatureGenerationServiceImpl digitalSignatureGenerationServiceImpl;
-    @MockBean
+    @Autowired
     protected UserDownloadingFileHttpResponseService userDownloadingFileHttpResponseService;
     @Autowired
     protected FileWritingService fileWritingService;
@@ -41,18 +42,24 @@ public abstract class BaseSpringBootTest {
     protected FileHandlingHttpResponseService fileHandlingHttpResponseService;
     @Autowired
     protected FileHandlingSystemService fileHandlingSystemService;
-    @MockBean
+    @Autowired
     protected PreparingCompletableFutureAttachmentService preparingCompletableFutureAttachmentService;
     @Autowired
     protected JavaMailSender javaMailSender;
-    @MockBean
-    protected RealtyObjectRepository realtyObjectRepository;
     @Autowired
     protected HomeTemplateFillingServiceImpl homeTemplateFillingService;
     @Autowired
     protected ResetTokenGenerationService resetTokenGenerationService;
     @Autowired
     protected MailSendingServiceImpl mailSendingServiceImpl;
-    @MockBean
-    protected MimeMessageHelper mimeMessageHelper;
+    @Autowired
+    protected RealtyObjectServiceImpl realtyObjectServiceImpl;
+    @Autowired
+    protected RealtyObjectTemplateFillingServiceImpl realtyObjectTemplateFillingServiceImpl;
+    @Autowired
+    protected RegistrationTemplateFillingServiceImpl registrationTemplateFillingServiceImpl;
+    @Autowired
+    protected ResetTokenGenerationServiceImpl resetTokenGenerationServiceImpl;
+    @Autowired
+    protected UserTemplateFillingServiceImpl userTemplateFillingServiceImpl;
 }

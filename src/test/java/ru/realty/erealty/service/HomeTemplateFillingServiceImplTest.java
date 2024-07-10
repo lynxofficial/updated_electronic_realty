@@ -14,7 +14,7 @@ class HomeTemplateFillingServiceImplTest extends BaseSpringBootTest {
     void fillHomeTemplateShouldWork() {
         Mockito.when(realtyObjectRepository.findAll())
                 .thenReturn(List.of(new RealtyObject(), new RealtyObject(), new RealtyObject()));
-        final Model model = new ExtendedModelMap();
+        Model model = new ExtendedModelMap();
         homeTemplateFillingService.fillHomeTemplate(model);
         Assertions.assertTrue(model.containsAttribute("realtyObjects"));
     }
