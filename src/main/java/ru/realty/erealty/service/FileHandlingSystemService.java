@@ -13,13 +13,13 @@ import java.util.concurrent.CompletableFuture;
 public class FileHandlingSystemService implements ImageHandlingService<List<CompletableFuture<String>>,
         MimeMessageHelper> {
     @Value("${default.image.links}")
-    private final List<String> DEFAULT_IMAGE_LINKS;
+    private final List<String> imageLinks;
     private final FileHandlingHttpResponseService fileHandlingHttpResponseService;
     private final PreparingCompletableFutureAttachmentService preparingCompletableFutureAttachmentService;
 
     @Override
     public List<CompletableFuture<String>> attachImage(final MimeMessageHelper messageHelper) {
-        return DEFAULT_IMAGE_LINKS.stream()
+        return imageLinks.stream()
                 .map(fileHandlingHttpResponseService::attachImage)
                 .peek(completableFuture -> preparingCompletableFutureAttachmentService
                         .prepareCompletableFutureAttachment(completableFuture, messageHelper))
