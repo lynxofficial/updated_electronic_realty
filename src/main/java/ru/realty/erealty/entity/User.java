@@ -10,9 +10,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,6 +18,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @EqualsAndHashCode(exclude = {"passwordResetToken", "realtyObjects"})
 public class User {
     @Id

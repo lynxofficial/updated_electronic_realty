@@ -16,5 +16,4 @@ public class AgencyServiceImpl implements AgencyService {
     public List<Agency> findAll() {
         return agencyRepository.findAll();
     }
-
 }
