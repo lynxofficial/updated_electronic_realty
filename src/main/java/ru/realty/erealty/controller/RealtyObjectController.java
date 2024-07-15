@@ -17,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.exception.RealtyObjectNotFoundException;
-import ru.realty.erealty.service.CommonUserAuthorizationService;
-import ru.realty.erealty.service.RealtyObjectService;
-import ru.realty.erealty.service.RealtyObjectTemplateFillingService;
-import ru.realty.erealty.service.UserSearchingService;
+import ru.realty.erealty.service.common.CommonUserAuthorizationService;
+import ru.realty.erealty.service.realty.RealtyObjectService;
+import ru.realty.erealty.service.template.realty.RealtyObjectTemplateFillingService;
+import ru.realty.erealty.service.user.UserSearchingService;
 
 import java.io.IOException;
 import java.security.Principal;

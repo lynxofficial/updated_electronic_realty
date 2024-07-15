@@ -10,8 +10,12 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -19,7 +23,11 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "realty_objects")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(exclude = "user")
+@ToString(exclude = "user")
 public class RealtyObject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

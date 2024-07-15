@@ -33,11 +33,11 @@
             <property name="allowByTailComment" value="true"/>
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
-<!--        <module name="IllegalMethodCall">-->
-<!--            <property name="illegalMethodNames"-->
-<!--                      value="emptyList, emptyMap, emptyNavigableMap, emptyNavigableSet, emptySet,emptySortedMap, emptySortedSet, now, parse, systemDefault, systemDefaultZone, singleton, singletonList, singletonMap"/>-->
-<!--            <property name="excludedQualifiers" value="DockerImageName"/>-->
-<!--        </module>-->
+        <module name="IllegalMethodCall">
+            <property name="illegalMethodNames"
+                      value="emptyList, emptyMap, emptyNavigableMap, emptyNavigableSet, emptySet,emptySortedMap, emptySortedSet, now, parse, systemDefault, systemDefaultZone, singleton, singletonList, singletonMap"/>
+            <property name="excludedQualifiers" value="DockerImageName"/>
+        </module>
         <module name="AvoidStarImport"/>
         <module name="OneTopLevelClass"/>
         <module name="NoLineWrap">

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.service.CommonUserAuthorizationService;
-import ru.realty.erealty.service.DigitalSignatureGenerationService;
+import ru.realty.erealty.service.common.CommonUserAuthorizationService;
+import ru.realty.erealty.service.signature.DigitalSignatureGenerationService;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

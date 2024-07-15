@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import ru.realty.erealty.service.CommonUserAuthorizationService;
-import ru.realty.erealty.service.HomeTemplateFillingService;
+import ru.realty.erealty.service.common.CommonUserAuthorizationService;
+import ru.realty.erealty.service.template.home.HomeTemplateFillingService;
 
 import java.security.Principal;
 
