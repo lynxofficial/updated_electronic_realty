@@ -27,6 +27,7 @@
         <plugins.pmd.version>3.23.0</plugins.pmd.version>
         <plugins.spotbugs.version>4.8.6.0</plugins.spotbugs.version>
         <plugins.spotbugs.github.version>4.8.6</plugins.spotbugs.github.version>
+        <dependencies.flyway.version>10.15.2</dependencies.flyway.version>
     </properties>
 
     <dependencies>
@@ -86,12 +87,23 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-docker-compose</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${dependencies.flyway.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <version>${dependencies.flyway.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -103,6 +115,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <target>${maven.compiler.target}</target>
+                    <source>${maven.compiler.source}</source>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
