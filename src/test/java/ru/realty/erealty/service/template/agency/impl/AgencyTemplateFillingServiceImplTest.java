@@ -1,4 +1,4 @@
-package ru.realty.erealty.service.agency.impl;
+package ru.realty.erealty.service.template.agency.impl;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
