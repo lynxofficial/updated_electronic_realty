@@ -16,10 +16,17 @@
     <url>https://maven.apache.org</url>
 
     <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
+        <dependencies.junit.version>3.8.1</dependencies.junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <plugins.checkstyle.version>3.4.0</plugins.checkstyle.version>
         <plugins.checkstyle.thomasjensen.version>7.0.1</plugins.checkstyle.thomasjensen.version>
         <plugins.checkstyle.puppycrawl.version>10.3.4</plugins.checkstyle.puppycrawl.version>
+        <plugins.pmd.version>3.23.0</plugins.pmd.version>
+        <plugins.spotbugs.version>4.8.6.0</plugins.spotbugs.version>
+        <plugins.spotbugs.github.version>4.8.6</plugins.spotbugs.github.version>
     </properties>
 
     <dependencies>
@@ -75,7 +82,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <version>${dependencies.junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -100,7 +107,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.23.0</version>
+                <version>${plugins.pmd.version}</version>
                 <configuration>
                     <rulesets>
                         <ruleset>pmd-rules.xml</ruleset>
@@ -120,34 +127,14 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.8.6.0</version>
+                <version>${plugins.spotbugs.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.github.spotbugs</groupId>
                         <artifactId>spotbugs</artifactId>
-                        <version>4.8.6</version>
+                        <version>${plugins.spotbugs.github.version}</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
-                        <configuration>
-                            <configLocation>checkstyle.xml</configLocation>
-                            <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-                            <consoleOutput>true</consoleOutput>
-                            <failsOnError>true</failsOnError>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        </configuration>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
