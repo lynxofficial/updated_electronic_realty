@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.service.CommonUserAuthorizationService;
-import ru.realty.erealty.service.RegistrationTemplateFillingService;
-import ru.realty.erealty.service.UserModificationService;
+import ru.realty.erealty.service.common.CommonUserAuthorizationService;
+import ru.realty.erealty.service.template.registration.RegistrationTemplateFillingService;
+import ru.realty.erealty.service.user.UserModificationService;
 
 import java.security.Principal;
 

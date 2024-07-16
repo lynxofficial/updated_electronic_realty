@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import ru.realty.erealty.service.CommonUserAuthorizationService;
-import ru.realty.erealty.service.UserModificationService;
-import ru.realty.erealty.service.UserTemplateFillingService;
+import ru.realty.erealty.service.common.CommonUserAuthorizationService;
+import ru.realty.erealty.service.user.UserModificationService;
+import ru.realty.erealty.service.template.user.UserTemplateFillingService;
 
 import java.security.Principal;
 

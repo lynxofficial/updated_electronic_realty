@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.User;
-import ru.realty.erealty.service.CustomTokenService;
-import ru.realty.erealty.service.UserModificationService;
-import ru.realty.erealty.service.UserSearchingService;
-import ru.realty.erealty.service.UserVerificationService;
-import ru.realty.erealty.service.MailSendingService;
-import ru.realty.erealty.service.CommonUserAuthorizationService;
+import ru.realty.erealty.service.custom.CustomTokenService;
+import ru.realty.erealty.service.user.UserModificationService;
+import ru.realty.erealty.service.user.UserSearchingService;
+import ru.realty.erealty.service.user.UserVerificationService;
+import ru.realty.erealty.service.mail.MailSendingService;
+import ru.realty.erealty.service.common.CommonUserAuthorizationService;
 
 import java.security.Principal;
 
