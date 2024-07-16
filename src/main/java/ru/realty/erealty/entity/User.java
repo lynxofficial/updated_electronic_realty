@@ -10,8 +10,12 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -20,7 +24,11 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(exclude = {"passwordResetToken", "realtyObjects"})
+@ToString(exclude = {"passwordResetToken", "realtyObjects"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

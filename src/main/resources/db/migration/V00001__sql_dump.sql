@@ -83,7 +83,7 @@ VALUES (102, '12345', true, 'Egor', '$2a$10$8aX8iM.kIOukH2neaJqRIeBh8ejz9xkuuzG3
         0.00, NULL, NULL);
 
 ALTER TABLE ONLY passwordresettoken
-    ADD CONSTRAINT fkky4yy1iru766swgx0f2v0iv11 FOREIGN KEY (user_id) REFERENCES public.users (user_id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fkky4yy1iru766swgx0f2v0iv11 FOREIGN KEY (user_id) REFERENCES users (user_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY realty_objects
-    ADD CONSTRAINT realty_objects_users_user_id_fk FOREIGN KEY (user_id) REFERENCES public.users (user_id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT realty_objects_users_user_id_fk FOREIGN KEY (user_id) REFERENCES users (user_id) ON UPDATE CASCADE ON DELETE CASCADE;
