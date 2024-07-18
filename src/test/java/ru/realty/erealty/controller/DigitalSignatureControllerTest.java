@@ -1,24 +1,44 @@
 package ru.realty.erealty.controller;
 
-import lombok.SneakyThrows;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import ru.realty.erealty.support.BaseSpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class DigitalSignatureControllerTest extends BaseSpringBootControllerTest {
-    @SneakyThrows
+class DigitalSignatureControllerTest extends BaseSpringBootTest {
     @Test
-    void getGenerateUserDigitalSignatureShouldWork() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/generateUserDigitalSignature"))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection());
+    void getGenerateUserDigitalSignatureShouldWork() throws Exception {
+        webTestClient.get()
+                .uri("/generateUserDigitalSignature")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody();
     }
 
-    @SneakyThrows
     @Test
-    void generateUserDigitalSignatureShouldWork() {
-        mockMvc.perform(MockMvcRequestBuilders.post("/generateUserDigitalSignature"))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection());
+    void getGenerateUserDigitalSignatureShouldNotWork() throws Exception {
+        webTestClient.get()
+                .uri("/generateUserDigitalSignature/10")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody();
+    }
+
+    @Test
+    void generateUserDigitalSignatureThrowsException() {
+        Assertions.assertThatExceptionOfType(WebClientRequestException.class)
+                .isThrownBy(() -> webTestClient.post()
+                        .uri("/generateUserDigitalSignature")
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
+                        .exchange()
+                        .expectStatus()
+                        .is3xxRedirection()
+                        .expectBody());
     }
 }

@@ -116,6 +116,6 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     ) {
         return currentUser.getBalance().subtract(currentRealtyObject.getPrice()).compareTo(BigDecimal.ZERO) < 0
                 || currentUser.getDigitalSignature() == null
-                || currentUser.getUserId().equals(targetUser.getUserId());
+                || currentUser.getId().equals(targetUser.getId());
     }
 }

@@ -1,17 +1,30 @@
 package ru.realty.erealty.controller;
 
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import ru.realty.erealty.support.BaseSpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class AgencyControllerTest extends BaseSpringBootControllerTest {
-    @SneakyThrows
+class AgencyControllerTest extends BaseSpringBootTest {
     @Test
     void getAllAgenciesShouldWork() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/agencies"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+        webTestClient.get()
+                .uri("/agencies")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody();
+    }
+
+    @Test
+    void getAllAgenciesShouldNotWork() {
+        webTestClient.get()
+                .uri("/agencies/1")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody();
     }
 }

@@ -1,42 +1,29 @@
 package ru.realty.erealty.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import ru.realty.erealty.entity.support.BaseEntity;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "passwordresettoken")
+@SuperBuilder
 @Getter
-@Builder
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "user")
-@ToString(exclude = "user")
-public class PasswordResetToken {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Setter
+public class PasswordResetToken extends BaseEntity {
     private String token;
-    @Setter
     private LocalDateTime expiryDateTime;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    @Setter
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 }

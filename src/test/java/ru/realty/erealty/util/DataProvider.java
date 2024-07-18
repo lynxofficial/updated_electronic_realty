@@ -9,14 +9,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class DataProvider {
-    public static Agency.AgencyBuilder agencyBuilder() {
+    public static Agency.AgencyBuilder<?, ?> agencyBuilder() {
         return Agency.builder()
-                .agencyId(1)
+                .id(1)
                 .address("Test district, 0")
-                .agencyName("Test Agency");
+                .name("Test Agency");
     }
 
-    public static PasswordResetToken.PasswordResetTokenBuilder passwordResetTokenBuilder() {
+    public static PasswordResetToken.PasswordResetTokenBuilder<?, ?> passwordResetTokenBuilder() {
         return PasswordResetToken.builder()
                 .token("123456")
                 .user(userBuilder().build())
@@ -24,10 +24,10 @@ public class DataProvider {
                 .expiryDateTime(LocalDateTime.now());
     }
 
-    public static RealtyObject.RealtyObjectBuilder realtyObjectBuilder() {
+    public static RealtyObject.RealtyObjectBuilder<?, ?> realtyObjectBuilder() {
         return RealtyObject.builder()
-                .realtyObjectId(0)
-                .realtyObjectName("TestRealtyObject")
+                .id(0)
+                .name("TestRealtyObject")
                 .price(BigDecimal.valueOf(1_000_000L))
                 .address("Test district, 10")
                 .description("Test description")
@@ -36,9 +36,9 @@ public class DataProvider {
                 .user(userBuilder().build());
     }
 
-    public static User.UserBuilder userBuilder() {
+    public static User.UserBuilder<?, ?> userBuilder() {
         return User.builder()
-                .userId(0)
+                .id(0)
                 .password("1234")
                 .email("test@test.com")
                 .role("ROLE_USER")

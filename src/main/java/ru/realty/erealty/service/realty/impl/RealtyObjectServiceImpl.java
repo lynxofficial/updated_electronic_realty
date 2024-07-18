@@ -65,10 +65,10 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     @Override
     public Boolean buyRealtyObjectWithDigitalSignature(final RealtyObject realtyObject)
             throws RealtyObjectNotFoundException {
-        Optional<RealtyObject> optionalRealtyObject = realtyObjectRepository.findById(realtyObject.getRealtyObjectId());
+        Optional<RealtyObject> optionalRealtyObject = realtyObjectRepository.findById(realtyObject.getId());
         RealtyObject currentRealtyObject = optionalRealtyObject
                 .orElseThrow(() -> new RealtyObjectNotFoundException("Объект недвижимости не найден"));
-        Optional<User> optionalUser = userRepository.findById(currentRealtyObject.getUser().getUserId());
+        Optional<User> optionalUser = userRepository.findById(currentRealtyObject.getUser().getId());
         User targetUser = optionalUser
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -94,7 +94,7 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
 
     @Override
     public void deleteRealtyObject(final RealtyObject realtyObject) throws RealtyObjectNotFoundException {
-        RealtyObject currentRealtyObject = realtyObjectRepository.findById(realtyObject.getRealtyObjectId())
+        RealtyObject currentRealtyObject = realtyObjectRepository.findById(realtyObject.getId())
                 .orElseThrow(() -> new RealtyObjectNotFoundException("Объект недвижимости не найден"));
         User user = currentRealtyObject.getUser();
         assert user != null;

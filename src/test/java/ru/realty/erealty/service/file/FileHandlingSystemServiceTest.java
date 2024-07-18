@@ -2,8 +2,8 @@ package ru.realty.erealty.service.file;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import ru.realty.erealty.support.BaseSpringBootTest;
@@ -45,7 +45,8 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
                     fileWritingService.writeFile(file);
                 });
         List<CompletableFuture<String>> completableFutures = fileHandlingSystemService.attachImage(helper);
-        Assertions.assertNotNull(completableFutures);
+        Assertions.assertThat(completableFutures)
+                .isNotNull();
     }
 
     @Test
@@ -63,11 +64,12 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
 
         fileHandlingSystemService.attachImage(helper);
 
-        Assertions.assertThrows(NullPointerException.class, () -> Awaitility.await().atMost(Duration.ofSeconds(5L))
-                .untilAsserted(() -> {
-                    fileHandlingSystemService.attachImage(null);
-                    fileWritingService.writeFile(file);
-                }));
+        Assertions.assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> Awaitility.await().atMost(Duration.ofSeconds(5L))
+                        .untilAsserted(() -> {
+                            fileHandlingSystemService.attachImage(null);
+                            fileWritingService.writeFile(file);
+                        }));
     }
 
     @Test
@@ -94,8 +96,8 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
         MimeMessageHelper mimeMessageHelper = MailHelperGenerator.generateMailHelper(javaMailSender, user, url);
         List<CompletableFuture<String>> completableFutures = fileHandlingSystemService.attachImage(mimeMessageHelper);
 
-        Assertions.assertThrows(UnsupportedOperationException.class,
-                () -> Awaitility.await().atMost(Duration.ofSeconds(5L))
+        Assertions.assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> Awaitility.await().atMost(Duration.ofSeconds(5L))
                         .untilAsserted(() -> {
                             completableFutures.add(new CompletableFuture<>());
                             fileHandlingSystemService.runAsyncAttachImage(completableFutures);

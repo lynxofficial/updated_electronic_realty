@@ -1,6 +1,6 @@
 package ru.realty.erealty.service.agency.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.realty.erealty.support.BaseSpringBootTest;
@@ -17,7 +17,8 @@ class AgencyServiceImplTest extends BaseSpringBootTest {
 
         List<Agency> agencies = agencyRepository.findAll();
 
-        Assertions.assertEquals(agencies, agencyServiceImpl.findAll());
+        Assertions.assertThat(agencies)
+                .isEqualTo(agencyServiceImpl.findAll());
     }
 
     @Test
@@ -27,7 +28,7 @@ class AgencyServiceImplTest extends BaseSpringBootTest {
 
         List<Agency> agencies = agencyServiceImpl.findAll();
 
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> agencies.add(DataProvider.agencyBuilder()
-                .build()));
+        Assertions.assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> agencies.add(DataProvider.agencyBuilder().build()));
     }
 }

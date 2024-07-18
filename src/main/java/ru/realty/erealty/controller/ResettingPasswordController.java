@@ -43,8 +43,8 @@ public class ResettingPasswordController {
     @PostMapping("/forgotPassword")
     public String forgotPasswordProcess(final @ModelAttribute User user) {
         String output = "";
-        User user1 = userSearchingService.findByEmail(user.getEmail());
-        if (user1 != null) {
+        User targetUser = userSearchingService.findByEmail(user.getEmail());
+        if (targetUser != null) {
             output = mailSendingService.sendEmail(user);
         }
         if ("success".equals(output)) {

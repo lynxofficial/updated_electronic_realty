@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="Layout(content)"
+      th:replace="base::Layout(~{::section})">
+<script th:inline="javascript">
+</script>
+<head>
+    <meta charset="UTF-8">
+    <title>Электронная цифровая подпись</title>
+</head>
+<body>
+<section>
+    <div class="container p-3">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header text-center fs-4">Формирование электронной цифровой подписи</div>
+                    <!--/*@thymesVar id="msg" type="java"*/-->
+                    <th:block th:if="${session.msg}">
+                        <p class="text-center text-success fs-4">
+                            [[${session.msg}]]
+                        </p>
+                        <!--/*@thymesVar id="removeSessionMessage" type="java"*/-->
+                        <th:block th:text="${@userServiceImpl.removeSessionMessage()}"></th:block>
+                    </th:block>
+                    <div class="card-body">
+                        <form action="/generateUserDigitalSignature" method="post">
+                            <div class="mb-3">
+                                <label>Введите пароль от электронной цифровой подписи</label>
+                                <label for="passwordForDigitalSignature"></label>
+                                <input type="password"
+                                       id="passwordForDigitalSignature"
+                                       name="passwordForDigitalSignature"
+                                       class="form-control" required>
+                            </div>
+                            <button class="btn btn-primary col-md-12">
+                                Сформировать электронную цифровую подпись
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,11 +1,17 @@
 package ru.realty.erealty.support;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.servlet.MockMvc;
 import ru.realty.erealty.repository.AgencyRepository;
 import ru.realty.erealty.repository.CustomTokenRepository;
 import ru.realty.erealty.repository.RealtyObjectRepository;
@@ -29,10 +35,14 @@ import ru.realty.erealty.service.token.ResetTokenGenerationService;
 import ru.realty.erealty.service.token.impl.ResetTokenGenerationServiceImpl;
 import ru.realty.erealty.service.user.UserDownloadingFileHttpResponseService;
 import ru.realty.erealty.service.user.impl.UserServiceImpl;
+import ru.realty.erealty.support.container.BaseSpringBootTestContainer;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
+@ContextConfiguration(initializers = BaseSpringBootTestContainer.Initializer.class)
 @ExtendWith(MockitoExtension.class)
-public abstract class BaseSpringBootTest {
+public class BaseSpringBootTest {
     @MockBean
     protected AgencyRepository agencyRepository;
     @MockBean
@@ -81,4 +91,13 @@ public abstract class BaseSpringBootTest {
     protected ResetTokenGenerationServiceImpl resetTokenGenerationServiceImpl;
     @Autowired
     protected UserTemplateFillingServiceImpl userTemplateFillingServiceImpl;
+    @Autowired
+    protected MockMvc mockMvc;
+    @Autowired
+    protected WebTestClient webTestClient;
+
+    @BeforeAll
+    public static void initPostgresqlContainer() {
+        BaseSpringBootTestContainer.POSTGRESQL_CONTAINER.start();
+    }
 }

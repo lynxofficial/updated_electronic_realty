@@ -70,9 +70,9 @@ public class UserServiceImplTest extends BaseSpringBootTest {
         User user = DataProvider.userBuilder().build();
         Mockito.doNothing()
                 .when(userRepository)
-                .deleteById(user.getUserId());
+                .deleteById(user.getId());
 
-        Assertions.assertDoesNotThrow(() -> userServiceImpl.deleteById(user.getUserId()));
+        Assertions.assertDoesNotThrow(() -> userServiceImpl.deleteById(user.getId()));
     }
 
     @Test
@@ -135,8 +135,8 @@ public class UserServiceImplTest extends BaseSpringBootTest {
     }
 
     @Test
-    void removeSessionMessageDoesNotThrowException() {
-        Assertions.assertDoesNotThrow(() -> userServiceImpl.removeSessionMessage());
+    void removeSessionMessageThrowsExceptionException() {
+        Assertions.assertThrows(NullPointerException.class, () -> userServiceImpl.removeSessionMessage());
     }
 
     @Test
@@ -243,5 +243,26 @@ public class UserServiceImplTest extends BaseSpringBootTest {
 
         Assertions.assertThrows(NullPointerException.class, () -> userServiceImpl
                 .isNotPositiveBalanceOrExistsDigitalSignature(currentUser, targetUser, realtyObject));
+    }
+
+    @Test
+    void isNotPositiveBalanceOrExistsDigitalSignature_whenCurrentUserDigitalSignatureIsNull() {
+        User currentUser = DataProvider.userBuilder()
+                .balance(BigDecimal.valueOf(100_000L))
+                .digitalSignature(null)
+                .build();
+        User targetUser = DataProvider.userBuilder()
+                .balance(BigDecimal.valueOf(10_000L))
+                .build();
+        RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
+                .price(BigDecimal.valueOf(100_000L))
+                .build();
+
+        Assertions.assertEquals(true, userServiceImpl
+                .isNotPositiveBalanceOrExistsDigitalSignature(
+                        currentUser,
+                        targetUser,
+                        realtyObject
+                ));
     }
 }

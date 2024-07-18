@@ -1,8 +1,8 @@
 package ru.realty.erealty.service.future;
 
 import jakarta.mail.MessagingException;
+import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import ru.realty.erealty.support.BaseSpringBootTest;
@@ -40,9 +40,10 @@ class PreparingCompletableFutureAttachmentServiceTest extends BaseSpringBootTest
         CompletableFuture<String> completableFuture = fileHandlingHttpResponseService.attachImage(url);
         MimeMessageHelper mimeMessageHelper = MailHelperGenerator.generateMailHelper(javaMailSender, user, null);
 
-        Assertions.assertThrows(RuntimeException.class, () -> Awaitility.await()
-                .atMost(Duration.ofSeconds(1L))
-                .untilAsserted(() -> preparingCompletableFutureAttachmentService
-                        .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper)));
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> Awaitility.await()
+                        .atMost(Duration.ofSeconds(1L))
+                        .untilAsserted(() -> preparingCompletableFutureAttachmentService
+                                .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper)));
     }
 }

@@ -1,6 +1,6 @@
 package ru.realty.erealty.service.file.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.realty.erealty.support.BaseSpringBootTest;
 
@@ -16,13 +16,15 @@ class FileWritingServiceImplTest extends BaseSpringBootTest {
         fileWritingService.writeFile(file);
 
         File actualFile = new File("src/main/resources/images/imageForTest.png.png");
-        Assertions.assertNotNull(actualFile);
+        Assertions.assertThat(actualFile)
+                .isNotNull();
     }
 
     @Test
     void writeFileThrowsException() {
         File file = new File("default/image.png");
 
-        Assertions.assertThrows(IIOException.class, () -> fileWritingService.writeFile(file));
+        Assertions.assertThatExceptionOfType(IIOException.class)
+                .isThrownBy(() -> fileWritingService.writeFile(file));
     }
 }

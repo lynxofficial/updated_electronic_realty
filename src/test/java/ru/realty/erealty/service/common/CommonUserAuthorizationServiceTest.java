@@ -1,6 +1,6 @@
 package ru.realty.erealty.service.common;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.ui.ExtendedModelMap;
@@ -25,7 +25,8 @@ class CommonUserAuthorizationServiceTest extends BaseSpringBootTest {
 
         commonUserAuthorizationService.setCommonUser(principal, model);
 
-        Assertions.assertTrue(model.containsAttribute("user"));
+        Assertions.assertThat(model.containsAttribute("user"))
+                .isTrue();
     }
 
     @Test
@@ -40,6 +41,7 @@ class CommonUserAuthorizationServiceTest extends BaseSpringBootTest {
 
         commonUserAuthorizationService.setCommonUser(principal, model);
 
-        Assertions.assertNotEquals(1, model.asMap().size());
+        Assertions.assertThat(model.asMap().size())
+                .isNotEqualTo(1);
     }
 }
