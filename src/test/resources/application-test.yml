@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: &url jdbc:postgresql://localhost:5432/electronic_realty_database
+    driver-class-name: org.postgresql.Driver
+    username: &username postgres
+    password: &password 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+  flyway:
+    baseline-on-migrate: true
+    fail-on-missing-locations: true
+    locations: classpath:db/migration
+    schemas: test
+    enabled: true
+    user: *username
+    password: *password
+    url: *url

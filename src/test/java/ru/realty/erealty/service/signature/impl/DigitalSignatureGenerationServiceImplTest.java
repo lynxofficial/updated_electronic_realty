@@ -1,6 +1,6 @@
 package ru.realty.erealty.service.signature.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.realty.erealty.support.BaseSpringBootTest;
@@ -23,7 +23,8 @@ class DigitalSignatureGenerationServiceImplTest extends BaseSpringBootTest {
 
         digitalSignatureGenerationServiceImpl.generateDigitalSignature(passwordForDigitalSignature, user);
 
-        Assertions.assertNotNull(user.getDigitalSignature());
+        Assertions.assertThat(user.getDigitalSignature())
+                .isNotNull();
     }
 
     @Test
@@ -35,7 +36,8 @@ class DigitalSignatureGenerationServiceImplTest extends BaseSpringBootTest {
         Mockito.when(userRepository.findByEmail("123@mail.ru"))
                 .thenReturn(Optional.of(user));
 
-        Assertions.assertThrows(NullPointerException.class, () -> digitalSignatureGenerationServiceImpl
-                .generateDigitalSignature(user.getPasswordForDigitalSignature(), user));
+        Assertions.assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> digitalSignatureGenerationServiceImpl
+                        .generateDigitalSignature(user.getPasswordForDigitalSignature(), user));
     }
 }

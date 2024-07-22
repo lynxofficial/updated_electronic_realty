@@ -1,6 +1,6 @@
 package ru.realty.erealty.service.template.registration.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.ui.ExtendedModelMap;
@@ -26,7 +26,8 @@ class RegistrationTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         registrationTemplateFillingServiceImpl.fillRegistrationTemplate(user.getVerificationCode(), model);
 
-        Assertions.assertTrue(model.containsAttribute("msg"));
+        Assertions.assertThat(model.containsAttribute("msg"))
+                .isTrue();
     }
 
     @Test
@@ -44,6 +45,7 @@ class RegistrationTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         registrationTemplateFillingServiceImpl.fillRegistrationTemplate(user.getVerificationCode(), model);
 
-        Assertions.assertNotEquals(1, model.asMap().size());
+        Assertions.assertThat(model.asMap().size())
+                .isNotEqualTo(1);
     }
 }

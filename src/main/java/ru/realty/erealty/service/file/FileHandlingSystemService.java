@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
-public class FileHandlingSystemService implements ImageHandlingService<List<CompletableFuture<String>>,
+public class FileHandlingSystemService implements ImageHandlingService<List<CompletableFuture<byte[]>>,
         MimeMessageHelper> {
     @Value("${default.image.links}")
     private final List<String> imageLinks;
@@ -20,7 +20,7 @@ public class FileHandlingSystemService implements ImageHandlingService<List<Comp
     private final PreparingCompletableFutureAttachmentService preparingCompletableFutureAttachmentService;
 
     @Override
-    public List<CompletableFuture<String>> attachImage(final MimeMessageHelper messageHelper) {
+    public List<CompletableFuture<byte[]>> attachImage(final MimeMessageHelper messageHelper) {
         return imageLinks.stream()
                 .map(fileHandlingHttpResponseService::attachImage)
                 .peek(completableFuture -> preparingCompletableFutureAttachmentService
@@ -28,7 +28,7 @@ public class FileHandlingSystemService implements ImageHandlingService<List<Comp
                 .toList();
     }
 
-    public void runAsyncAttachImage(final List<CompletableFuture<String>> completableFutures) {
+    public void runAsyncAttachImage(final List<CompletableFuture<byte[]>> completableFutures) {
         CompletableFuture.allOf(completableFutures.toArray(CompletableFuture[]::new)).join();
     }
 }

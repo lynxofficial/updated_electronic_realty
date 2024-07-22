@@ -8,10 +8,12 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.realty.erealty.config.CustomAuthSuccessHandler;
 import ru.realty.erealty.repository.AgencyRepository;
 import ru.realty.erealty.repository.CustomTokenRepository;
 import ru.realty.erealty.repository.RealtyObjectRepository;
@@ -22,7 +24,6 @@ import ru.realty.erealty.service.common.CommonUserAuthorizationService;
 import ru.realty.erealty.service.custom.impl.CustomTokenServiceImpl;
 import ru.realty.erealty.service.file.FileHandlingHttpResponseService;
 import ru.realty.erealty.service.file.FileHandlingSystemService;
-import ru.realty.erealty.service.file.FileWritingService;
 import ru.realty.erealty.service.future.PreparingCompletableFutureAttachmentService;
 import ru.realty.erealty.service.mail.impl.MailSendingServiceImpl;
 import ru.realty.erealty.service.realty.impl.RealtyObjectServiceImpl;
@@ -38,6 +39,8 @@ import ru.realty.erealty.service.user.impl.UserServiceImpl;
 import ru.realty.erealty.support.container.BaseSpringBootTestContainer;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@PropertySource("classpath:application.yml")
+@PropertySource("classpath:application-test.yml")
 @AutoConfigureMockMvc
 @AutoConfigureWebTestClient
 @ContextConfiguration(initializers = BaseSpringBootTestContainer.Initializer.class)
@@ -66,8 +69,6 @@ public class BaseSpringBootTest {
     @Autowired
     protected UserDownloadingFileHttpResponseService userDownloadingFileHttpResponseService;
     @Autowired
-    protected FileWritingService fileWritingService;
-    @Autowired
     protected FileHandlingHttpResponseService fileHandlingHttpResponseService;
     @Autowired
     protected FileHandlingSystemService fileHandlingSystemService;
@@ -95,6 +96,8 @@ public class BaseSpringBootTest {
     protected MockMvc mockMvc;
     @Autowired
     protected WebTestClient webTestClient;
+    @Autowired
+    protected CustomAuthSuccessHandler customAuthSuccessHandler;
 
     @BeforeAll
     public static void initPostgresqlContainer() {

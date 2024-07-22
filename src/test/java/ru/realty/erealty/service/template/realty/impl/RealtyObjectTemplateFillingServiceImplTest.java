@@ -1,25 +1,52 @@
 package ru.realty.erealty.service.template.realty.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
+import ru.realty.erealty.entity.User;
 import ru.realty.erealty.support.BaseSpringBootTest;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.exception.RealtyObjectNotFoundException;
 import ru.realty.erealty.util.DataProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 class RealtyObjectTemplateFillingServiceImplTest extends BaseSpringBootTest {
     @Test
+    @WithMockUser(username = "test@test.com")
+    void fillRealtyObjectTemplateShouldWork() {
+        final Model model = new ExtendedModelMap();
+        User user = DataProvider.userBuilder()
+                .realtyObjects(new ArrayList<>())
+                .build();
+        RealtyObject firstTestRealtyObject = DataProvider.realtyObjectBuilder().build();
+        RealtyObject secondTestRealtyObject = DataProvider.realtyObjectBuilder()
+                .id(1)
+                .build();
+        user.getRealtyObjects().add(firstTestRealtyObject);
+        user.getRealtyObjects().add(secondTestRealtyObject);
+        Mockito.when(userRepository.findByEmail("test@test.com"))
+                .thenReturn(Optional.of(user));
+        Mockito.when(realtyObjectRepository.findAllByUser(user))
+                .thenReturn(user.getRealtyObjects());
+
+        realtyObjectTemplateFillingServiceImpl.fillRealtyObjectTemplate(model);
+
+        Assertions.assertThat(model.containsAttribute("realtyObjects"))
+                .isTrue();
+    }
+
+    @Test
     void fillRealtyObjectTemplateThrowsException() {
         Model model = new ExtendedModelMap();
 
-        Assertions.assertThrows(NullPointerException.class,
-                () -> realtyObjectTemplateFillingServiceImpl.fillRealtyObjectTemplate(model));
+        Assertions.assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> realtyObjectTemplateFillingServiceImpl.fillRealtyObjectTemplate(model));
     }
 
     @Test
@@ -29,8 +56,9 @@ class RealtyObjectTemplateFillingServiceImplTest extends BaseSpringBootTest {
         Mockito.when(realtyObjectRepository.findById(0))
                 .thenReturn(Optional.of(realtyObject));
 
-        Assertions.assertDoesNotThrow(() -> realtyObjectTemplateFillingServiceImpl.fillBuyRealtyObjectTemplate(model,
-                "0"));
+        Assertions.assertThatNoException()
+                .isThrownBy(() -> realtyObjectTemplateFillingServiceImpl
+                        .fillBuyRealtyObjectTemplate(model, "0"));
     }
 
     @Test
@@ -40,8 +68,9 @@ class RealtyObjectTemplateFillingServiceImplTest extends BaseSpringBootTest {
         Mockito.when(realtyObjectRepository.findById(0))
                 .thenReturn(Optional.of(realtyObject));
 
-        Assertions.assertThrows(RealtyObjectNotFoundException.class,
-                () -> realtyObjectTemplateFillingServiceImpl.fillBuyRealtyObjectTemplate(model, "1"));
+        Assertions.assertThatExceptionOfType(RealtyObjectNotFoundException.class)
+                .isThrownBy(() -> realtyObjectTemplateFillingServiceImpl
+                        .fillBuyRealtyObjectTemplate(model, "1"));
     }
 
     @Test
@@ -56,7 +85,8 @@ class RealtyObjectTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         realtyObjectTemplateFillingServiceImpl.fillDeleteRealtyObjectsTemplate(model);
 
-        Assertions.assertTrue(model.containsAttribute("realtyObjects"));
+        Assertions.assertThat(model.containsAttribute("realtyObjects"))
+                .isTrue();
     }
 
     @Test
@@ -72,6 +102,7 @@ class RealtyObjectTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         realtyObjectTemplateFillingServiceImpl.fillDeleteRealtyObjectsTemplate(model);
 
-        Assertions.assertNotEquals(1, model.asMap().size());
+        Assertions.assertThat(model.asMap().size())
+                .isNotEqualTo(1);
     }
 }

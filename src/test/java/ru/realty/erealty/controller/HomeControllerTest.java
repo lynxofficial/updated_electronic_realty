@@ -1,74 +1,68 @@
 package ru.realty.erealty.controller;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpMethod;
 import ru.realty.erealty.support.BaseSpringBootTest;
+import ru.realty.erealty.util.WebTestClientRequestGenerator;
 
 class HomeControllerTest extends BaseSpringBootTest {
     @Test
     void indexShouldWork() {
-        webTestClient.get()
-                .uri("/")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody();
+        WebTestClientRequestGenerator.generateWebTestClientRequest(
+                webTestClient,
+                HttpMethod.GET,
+                "/",
+                200
+        );
     }
 
     @Test
     void indexShouldNotWork() {
-        webTestClient.get()
-                .uri("/123")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-                .exchange()
-                .expectStatus()
-                .is4xxClientError()
-                .expectBody();
+        WebTestClientRequestGenerator.generateWebTestClientRequest(
+                webTestClient,
+                HttpMethod.GET,
+                "/123",
+                404
+        );
     }
 
     @Test
     void registerShouldWork() {
-        webTestClient.get()
-                .uri("/register")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody();
+        WebTestClientRequestGenerator.generateWebTestClientRequest(
+                webTestClient,
+                HttpMethod.GET,
+                "/register",
+                200
+        );
     }
 
     @Test
     void registerShouldNotWork() {
-        webTestClient.get()
-                .uri("/registerUser")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-                .exchange()
-                .expectStatus()
-                .is4xxClientError()
-                .expectBody();
+        WebTestClientRequestGenerator.generateWebTestClientRequest(
+                webTestClient,
+                HttpMethod.GET,
+                "/registerUser",
+                404
+        );
     }
 
     @Test
     void loginShouldWork() {
-        webTestClient.get()
-                .uri("/signIn")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody();
+        WebTestClientRequestGenerator.generateWebTestClientRequest(
+                webTestClient,
+                HttpMethod.GET,
+                "/signIn",
+                200
+        );
     }
 
     @Test
     void loginShouldNotWork() {
-        webTestClient.get()
-                .uri("/login")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-                .exchange()
-                .expectStatus()
-                .is4xxClientError()
-                .expectBody();
+        WebTestClientRequestGenerator.generateWebTestClientRequest(
+                webTestClient,
+                HttpMethod.GET,
+                "/login",
+                404
+        );
     }
 }

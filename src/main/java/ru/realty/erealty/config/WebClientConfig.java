@@ -2,12 +2,12 @@ package ru.realty.erealty.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class RestTemplateConfig {
+public class WebClientConfig {
     @Bean
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
+    public WebClient getWebClient() {
+        return WebClient.create();
     }
 }

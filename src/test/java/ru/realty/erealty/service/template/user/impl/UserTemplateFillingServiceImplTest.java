@@ -1,6 +1,6 @@
 package ru.realty.erealty.service.template.user.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.ui.ExtendedModelMap;
@@ -23,7 +23,8 @@ public class UserTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         userTemplateFillingServiceImpl.fillDeleteUserTemplate(model);
 
-        Assertions.assertTrue(model.containsAttribute("users"));
+        Assertions.assertThat(model.containsAttribute("users"))
+                .isTrue();
     }
 
     @Test
@@ -39,7 +40,9 @@ public class UserTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         userTemplateFillingServiceImpl.fillDeleteUserTemplate(model);
 
-        Assertions.assertTrue(model.containsAttribute("users"));
-        Assertions.assertNotEquals(1, model.asMap().size());
+        Assertions.assertThat(model.containsAttribute("users"))
+                .isTrue();
+        Assertions.assertThat(model.asMap().size())
+                .isNotEqualTo(1);
     }
 }

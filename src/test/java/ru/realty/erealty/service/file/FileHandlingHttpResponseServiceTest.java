@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 class FileHandlingHttpResponseServiceTest extends BaseSpringBootTest {
     @Test
     void attachImageShouldWork() {
-        CompletableFuture<String> actualCompletableFuture = fileHandlingHttpResponseService
+        CompletableFuture<byte[]> actualCompletableFuture = fileHandlingHttpResponseService
                 .attachImage("link");
 
         Assertions.assertThat(actualCompletableFuture)
@@ -18,13 +18,8 @@ class FileHandlingHttpResponseServiceTest extends BaseSpringBootTest {
     }
 
     @Test
-    void attachImageThrowsAssertionError() {
-
-    }
-
-    @Test
     void attachImageThrowsException() {
-        CompletableFuture<String> actualCompletableFuture = fileHandlingHttpResponseService
+        CompletableFuture<byte[]> actualCompletableFuture = fileHandlingHttpResponseService
                 .attachImage("link");
 
         Assertions.assertThatExceptionOfType(ExecutionException.class)

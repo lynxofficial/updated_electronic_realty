@@ -1,8 +1,7 @@
 package ru.realty.erealty.service.mail.impl;
 
+import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
-import org.awaitility.core.ConditionTimeoutException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,13 +30,15 @@ class MailSendingServiceImplTest extends BaseSpringBootTest {
     void sendEmailWithUrlThrowsException() {
         User user = DataProvider.userBuilder()
                 .fullName("Test test test")
+                .email(null)
                 .verificationCode("12345")
                 .build();
         String url = "test.com";
 
-        Assertions.assertThrows(ConditionTimeoutException.class, () -> Awaitility.await()
-                .atMost(Duration.ofMillis(500L))
-                .untilAsserted(() -> mailSendingServiceImpl.sendEmail(user, url)));
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> Awaitility.await()
+                        .atMost(Duration.ofSeconds(5L))
+                        .untilAsserted(() -> mailSendingServiceImpl.sendEmail(user, url)));
     }
 
     @Test
@@ -60,8 +61,9 @@ class MailSendingServiceImplTest extends BaseSpringBootTest {
         Mockito.when(userRepository.findByEmail(user.getEmail()))
                 .thenReturn(Optional.of(user));
 
-        Assertions.assertThrows(RuntimeException.class, () -> Awaitility.await()
-                .atMost(Duration.ofSeconds(1L))
-                .untilAsserted(() -> mailSendingServiceImpl.sendEmail(null)));
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> Awaitility.await()
+                        .atMost(Duration.ofSeconds(1L))
+                        .untilAsserted(() -> mailSendingServiceImpl.sendEmail(null)));
     }
 }

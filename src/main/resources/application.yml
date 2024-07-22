@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/electronic_realty_database
+    url: &url jdbc:postgresql://localhost:5432/electronic_realty_database
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: 1234
+    username: &username postgres
+    password: &password 1234
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,25 +22,19 @@ spring:
     baseline-on-migrate: true
     fail-on-missing-locations: true
     locations: classpath:db/migration
-    schemas: public
+    schemas: test
     enabled: true
-    user: postgres
-    password: 1234
-    url: jdbc:postgresql://localhost:5432/electronic_realty_database
+    user: *username
+    password: *password
+    url: *url
+  thymeleaf:
+    prefix: classpath:/views/templates/
 default:
   image:
-    path: ${user.dir}/src/main/resources/static
+    path: ${user.dir}/src/main/resources/realty/static
     links: >
-      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images
-      /firstImageForDownloadingHttpRequest.png,
-      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images
-      /secondImageForDownloadingOnHttpRequest.jpg,
-      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images
-      /thirdImageForDownloadingOnHttpRequest.png,
-      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images
-      /fourthImageForDownloadingOnHttpRequest.jpg, 
-      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images
-      /fifthImageForDownloadingOnHttpRequest.png
-  mail:
-    image:
-      path: ${user.dir}\\src\\main\\resources\\images
+      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images/firstImage.png,
+      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images/secondImage.jpg,
+      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images/thirdImage.png,
+      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images/fourthImage.jpg, 
+      https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images/fifthImage.png

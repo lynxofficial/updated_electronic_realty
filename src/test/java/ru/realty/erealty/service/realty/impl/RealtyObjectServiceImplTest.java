@@ -1,6 +1,6 @@
 package ru.realty.erealty.service.realty.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
@@ -29,7 +29,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
 
         List<RealtyObject> realtyObjects = realtyObjectServiceImpl.findAll();
 
-        Assertions.assertEquals(realtyObjects, realtyObjectRepository.findAll());
+        Assertions.assertThat(realtyObjectRepository.findAll())
+                .isEqualTo(realtyObjects);
     }
 
     @Test
@@ -40,7 +41,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
 
         List<RealtyObject> realtyObjects = realtyObjectServiceImpl.findAll();
 
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> realtyObjects.add(new RealtyObject()));
+        Assertions.assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> realtyObjects.add(DataProvider.realtyObjectBuilder().build()));
     }
 
     @Test
@@ -50,7 +52,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
 
         RealtyObject realtyObject = realtyObjectServiceImpl.buyRealtyObject("0");
 
-        Assertions.assertEquals(realtyObject, realtyObjectRepository.findById(0).orElseThrow());
+        Assertions.assertThat(realtyObjectRepository.findById(0).orElseThrow())
+                .isEqualTo(realtyObject);
     }
 
     @Test
@@ -58,8 +61,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
         Mockito.when(realtyObjectRepository.findById(0))
                 .thenReturn(Optional.of(DataProvider.realtyObjectBuilder().build()));
 
-        Assertions.assertThrows(RealtyObjectNotFoundException.class,
-                () -> realtyObjectServiceImpl.buyRealtyObject("1"));
+        Assertions.assertThatExceptionOfType(RealtyObjectNotFoundException.class)
+                .isThrownBy(() -> realtyObjectServiceImpl.buyRealtyObject("1"));
     }
 
     @Test
@@ -80,7 +83,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
 
         realtyObjectServiceImpl.sellRealtyObject(user, realtyObject, multipartFile);
 
-        Assertions.assertEquals(realtyObject.getUser(), user);
+        Assertions.assertThat(user)
+                .isEqualTo(realtyObject.getUser());
     }
 
     @Test
@@ -101,7 +105,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
 
         realtyObjectServiceImpl.sellRealtyObject(user, realtyObject, multipartFile);
 
-        Assertions.assertEquals(realtyObject.getUser(), user);
+        Assertions.assertThat(user)
+                .isEqualTo(realtyObject.getUser());
     }
 
     @Test
@@ -119,8 +124,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
         MultipartFile multipartFile = new MockMultipartFile("realtyObjectImageForTest.png",
                 new FileInputStream("src/main/resources/images/realtyObjectImageForTest.png"));
 
-        Assertions.assertThrows(AccessDeniedException.class,
-                () -> realtyObjectServiceImpl.sellRealtyObject(user, realtyObject, multipartFile));
+        Assertions.assertThatExceptionOfType(AccessDeniedException.class)
+                .isThrownBy(() -> realtyObjectServiceImpl.sellRealtyObject(user, realtyObject, multipartFile));
     }
 
     @Test
@@ -153,7 +158,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertTrue(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject));
+        Assertions.assertThat(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()))
+                .isTrue();
     }
 
     @Test
@@ -181,7 +187,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertFalse(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject));
+        Assertions.assertThat(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()))
+                .isFalse();
     }
 
     @Test
@@ -211,7 +218,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertTrue(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject));
+        Assertions.assertThat(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()))
+                .isTrue();
     }
 
     @Test
@@ -237,8 +245,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThrows(NullPointerException.class,
-                () -> realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject));
+        Assertions.assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()));
     }
 
     @Test
@@ -250,8 +258,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThrows(NullPointerException.class,
-                () -> realtyObjectServiceImpl.deleteRealtyObject(realtyObject));
+        Assertions.assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> realtyObjectServiceImpl.deleteRealtyObject(realtyObject));
     }
 
     @Test
@@ -269,7 +277,8 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertDoesNotThrow(() -> realtyObjectServiceImpl.deleteRealtyObject(realtyObject));
+        Assertions.assertThatNoException()
+                .isThrownBy(() -> realtyObjectServiceImpl.deleteRealtyObject(realtyObject));
     }
 
     @Test
@@ -287,6 +296,7 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThrows(AssertionError.class, () -> realtyObjectServiceImpl.deleteRealtyObject(realtyObject));
+        Assertions.assertThatExceptionOfType(AssertionError.class)
+                .isThrownBy(() -> realtyObjectServiceImpl.deleteRealtyObject(realtyObject));
     }
 }

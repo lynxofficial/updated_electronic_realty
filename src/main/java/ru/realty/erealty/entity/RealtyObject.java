@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import ru.realty.erealty.entity.support.BaseEntity;
+import ru.realty.erealty.entity.common.BaseEntity;
 
 import java.math.BigDecimal;
 

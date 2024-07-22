@@ -42,12 +42,8 @@ public class ResettingPasswordController {
 
     @PostMapping("/forgotPassword")
     public String forgotPasswordProcess(final @ModelAttribute User user) {
-        String output = "";
         User targetUser = userSearchingService.findByEmail(user.getEmail());
-        if (targetUser != null) {
-            output = mailSendingService.sendEmail(user);
-        }
-        if ("success".equals(output)) {
+        if (targetUser != null && "success".equals(mailSendingService.sendEmail(user))) {
             return new ResponseEntity<>("redirect:/register?success", HttpStatus.OK).getBody();
         }
         return new ResponseEntity<>("redirect:/signIn?error", HttpStatus.OK).getBody();

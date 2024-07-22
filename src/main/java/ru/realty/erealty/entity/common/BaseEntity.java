@@ -1,4 +1,4 @@
-package ru.realty.erealty.entity.support;
+package ru.realty.erealty.entity.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;

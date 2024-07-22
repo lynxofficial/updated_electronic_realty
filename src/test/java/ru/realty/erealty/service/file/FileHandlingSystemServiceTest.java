@@ -11,7 +11,6 @@ import ru.realty.erealty.entity.User;
 import ru.realty.erealty.util.DataProvider;
 import ru.realty.erealty.util.MailHelperGenerator;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.util.List;
@@ -22,7 +21,6 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
     void attachImageShouldWork() throws MessagingException, UnsupportedEncodingException {
 //        precondition ----
 //      prepare mocks
-        var file = new File("src/main/resources/images/imageForTest.png");
 
 //      prepare test data
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -42,17 +40,14 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
         Awaitility.await().atMost(Duration.ofSeconds(5L))
                 .untilAsserted(() -> {
                     fileHandlingSystemService.attachImage(helper);
-                    fileWritingService.writeFile(file);
                 });
-        List<CompletableFuture<String>> completableFutures = fileHandlingSystemService.attachImage(helper);
+        List<CompletableFuture<byte[]>> completableFutures = fileHandlingSystemService.attachImage(helper);
         Assertions.assertThat(completableFutures)
                 .isNotNull();
     }
 
     @Test
     void attachImageThrowsException() throws MessagingException, UnsupportedEncodingException {
-        var file = new File("src/main/resources/images/imageForTest.png");
-
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         User user = DataProvider.userBuilder()
@@ -68,7 +63,6 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
                 .isThrownBy(() -> Awaitility.await().atMost(Duration.ofSeconds(5L))
                         .untilAsserted(() -> {
                             fileHandlingSystemService.attachImage(null);
-                            fileWritingService.writeFile(file);
                         }));
     }
 
@@ -80,7 +74,7 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
                 .build();
         String url = "test-url.com";
         MimeMessageHelper mimeMessageHelper = MailHelperGenerator.generateMailHelper(javaMailSender, user, url);
-        List<CompletableFuture<String>> completableFutures = fileHandlingSystemService.attachImage(mimeMessageHelper);
+        List<CompletableFuture<byte[]>> completableFutures = fileHandlingSystemService.attachImage(mimeMessageHelper);
 
         Awaitility.await().atMost(Duration.ofSeconds(5L))
                 .untilAsserted(() -> fileHandlingSystemService.runAsyncAttachImage(completableFutures));
@@ -94,7 +88,7 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
                 .build();
         String url = "test-url.com";
         MimeMessageHelper mimeMessageHelper = MailHelperGenerator.generateMailHelper(javaMailSender, user, url);
-        List<CompletableFuture<String>> completableFutures = fileHandlingSystemService.attachImage(mimeMessageHelper);
+        List<CompletableFuture<byte[]>> completableFutures = fileHandlingSystemService.attachImage(mimeMessageHelper);
 
         Assertions.assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> Awaitility.await().atMost(Duration.ofSeconds(5L))

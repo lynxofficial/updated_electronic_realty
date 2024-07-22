@@ -1,30 +1,28 @@
 package ru.realty.erealty.controller;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpMethod;
 import ru.realty.erealty.support.BaseSpringBootTest;
+import ru.realty.erealty.util.WebTestClientRequestGenerator;
 
 class AgencyControllerTest extends BaseSpringBootTest {
     @Test
     void getAllAgenciesShouldWork() {
-        webTestClient.get()
-                .uri("/agencies")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody();
+        WebTestClientRequestGenerator.generateWebTestClientRequest(
+                webTestClient,
+                HttpMethod.GET,
+                "/agencies",
+                200
+        );
     }
 
     @Test
     void getAllAgenciesShouldNotWork() {
-        webTestClient.get()
-                .uri("/agencies/1")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML_VALUE)
-                .exchange()
-                .expectStatus()
-                .is4xxClientError()
-                .expectBody();
+        WebTestClientRequestGenerator.generateWebTestClientRequest(
+                webTestClient,
+                HttpMethod.GET,
+                "/agencies/1",
+                404
+        );
     }
 }

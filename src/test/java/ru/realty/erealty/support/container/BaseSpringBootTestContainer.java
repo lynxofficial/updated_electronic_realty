@@ -1,6 +1,6 @@
 package ru.realty.erealty.support.container;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.ApplicationContextInitializer;
@@ -29,7 +29,7 @@ public interface BaseSpringBootTestContainer {
 
     class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
-        public void initialize(@NotNull final ConfigurableApplicationContext applicationContext) {
+        public void initialize(@NonNull final ConfigurableApplicationContext applicationContext) {
             TestPropertyValues.of(
                     "spring.datasource.url=" + POSTGRESQL_CONTAINER.getJdbcUrl(),
                     "spring.datasource.username=" + POSTGRESQL_CONTAINER.getUsername(),

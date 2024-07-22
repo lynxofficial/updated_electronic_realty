@@ -1,6 +1,6 @@
 package ru.realty.erealty.service.token.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.realty.erealty.support.BaseSpringBootTest;
@@ -21,8 +21,10 @@ class ResetTokenGenerationServiceImplTest extends BaseSpringBootTest {
 
         resetTokenGenerationServiceImpl.generateResetToken(user);
 
-        Assertions.assertNull(passwordResetToken.getToken());
-        Assertions.assertNotNull(passwordResetToken.getUser());
+        Assertions.assertThat(passwordResetToken.getToken())
+                .isNull();
+        Assertions.assertThat(passwordResetToken.getUser())
+                .isNotNull();
     }
 
     @Test
@@ -35,6 +37,7 @@ class ResetTokenGenerationServiceImplTest extends BaseSpringBootTest {
 
         resetTokenGenerationServiceImpl.generateResetToken(null);
 
-        Assertions.assertNull(passwordResetToken.getUser());
+        Assertions.assertThat(passwordResetToken.getUser())
+                .isNull();
     }
 }

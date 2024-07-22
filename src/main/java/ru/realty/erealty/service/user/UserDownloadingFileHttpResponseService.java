@@ -1,25 +1,21 @@
 package ru.realty.erealty.service.user;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
 public class UserDownloadingFileHttpResponseService {
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
 
-    public File downloadFileHttpResponse(final String imageLink) {
-        return restTemplate.execute(imageLink, HttpMethod.GET, null, clientHttpResponse -> {
-            File temporaryFile = File.createTempFile("image", "tmp");
-            StreamUtils.copy(clientHttpResponse.getBody(), Files.newOutputStream(Path.of(temporaryFile.getPath())));
-            return temporaryFile;
-        });
+    public byte[] downloadFileHttpResponse(final String imageLink) {
+        return webClient.get()
+                .uri(imageLink)
+                .accept(MediaType.IMAGE_JPEG)
+                .retrieve()
+                .bodyToMono(byte[].class)
+                .block();
     }
 }

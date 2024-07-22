@@ -1,6 +1,6 @@
 package ru.realty.erealty.service.template.home.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.ui.ExtendedModelMap;
@@ -24,7 +24,8 @@ class HomeTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         homeTemplateFillingService.fillHomeTemplate(model);
 
-        Assertions.assertTrue(model.containsAttribute("realtyObjects"));
+        Assertions.assertThat(model.containsAttribute("realtyObjects"))
+                .isTrue();
     }
 
     @Test
@@ -40,6 +41,6 @@ class HomeTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         homeTemplateFillingService.fillHomeTemplate(model);
 
-        Assertions.assertNotEquals(1, model.asMap().size());
+        Assertions.assertThat(model.asMap().size()).isNotEqualTo(1);
     }
 }

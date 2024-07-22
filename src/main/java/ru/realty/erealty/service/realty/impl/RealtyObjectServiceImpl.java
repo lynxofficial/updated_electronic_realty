@@ -63,9 +63,9 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     }
 
     @Override
-    public Boolean buyRealtyObjectWithDigitalSignature(final RealtyObject realtyObject)
+    public Boolean buyRealtyObjectWithDigitalSignature(final Integer id)
             throws RealtyObjectNotFoundException {
-        Optional<RealtyObject> optionalRealtyObject = realtyObjectRepository.findById(realtyObject.getId());
+        Optional<RealtyObject> optionalRealtyObject = realtyObjectRepository.findById(id);
         RealtyObject currentRealtyObject = optionalRealtyObject
                 .orElseThrow(() -> new RealtyObjectNotFoundException("Объект недвижимости не найден"));
         Optional<User> optionalUser = userRepository.findById(currentRealtyObject.getUser().getId());

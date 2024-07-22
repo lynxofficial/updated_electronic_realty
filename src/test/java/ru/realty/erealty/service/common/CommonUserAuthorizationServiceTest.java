@@ -44,4 +44,20 @@ class CommonUserAuthorizationServiceTest extends BaseSpringBootTest {
         Assertions.assertThat(model.asMap().size())
                 .isNotEqualTo(1);
     }
+
+    @Test
+    void setCommonUserShouldNotWorkWithPrincipalEmptyName() {
+        User user = DataProvider.userBuilder().build();
+        Principal principal = Mockito.mock(Principal.class);
+        Model model = new ExtendedModelMap();
+        Mockito.when(userRepository.findByEmail("test@test.com"))
+                .thenReturn(Optional.of(user));
+        Mockito.when(principal.getName())
+                .thenReturn("");
+
+        commonUserAuthorizationService.setCommonUser(principal, model);
+
+        Assertions.assertThat(model.containsAttribute("user"))
+                .isFalse();
+    }
 }

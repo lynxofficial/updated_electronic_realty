@@ -12,11 +12,11 @@ public interface RealtyObjectService {
 
     List<RealtyObject> findAll();
 
-    RealtyObject buyRealtyObject(String realtyObjectId) throws RealtyObjectNotFoundException;
+    RealtyObject buyRealtyObject(String id) throws RealtyObjectNotFoundException;
 
     void sellRealtyObject(User user, RealtyObject realtyObject, MultipartFile file) throws IOException;
 
-    Boolean buyRealtyObjectWithDigitalSignature(RealtyObject realtyObject) throws RealtyObjectNotFoundException;
+    Boolean buyRealtyObjectWithDigitalSignature(Integer id) throws RealtyObjectNotFoundException;
 
     void deleteRealtyObject(RealtyObject realtyObject) throws RealtyObjectNotFoundException;
 }

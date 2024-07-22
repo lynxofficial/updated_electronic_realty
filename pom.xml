@@ -19,7 +19,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.release>21</maven.compiler.release>
-        <dependencies.junit.version>3.8.1</dependencies.junit.version>
+        <dependencies.junit.version>4.13.2</dependencies.junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <plugins.checkstyle.version>3.4.0</plugins.checkstyle.version>
         <plugins.checkstyle.thomasjensen.version>7.0.1</plugins.checkstyle.thomasjensen.version>
