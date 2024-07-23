@@ -22,7 +22,6 @@ public class FileHandlingSystemService implements ImageHandlingService<List<Comp
     @Override
     public List<CompletableFuture<byte[]>> attachImage(final MimeMessageHelper messageHelper) {
         return imageLinks.stream()
-//                .map(fileHandlingHttpResponseService::attachImage)
                 .map(imageLink -> {
                     CompletableFuture<byte[]> completableFuture = fileHandlingHttpResponseService
                             .attachImage(imageLink);
