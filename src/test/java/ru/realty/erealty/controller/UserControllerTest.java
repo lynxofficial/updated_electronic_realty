@@ -1,5 +1,6 @@
 package ru.realty.erealty.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -14,9 +15,15 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 public class UserControllerTest extends BaseSpringBootTest {
+    @BeforeEach
+    public void verifyNoInteractionsWithMockBeans() {
+        verifyNoInteractions(userRepository);
+    }
+
     @Test
     @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void profileShouldWork() {

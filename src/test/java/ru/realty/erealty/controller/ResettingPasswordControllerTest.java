@@ -1,5 +1,6 @@
 package ru.realty.erealty.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import ru.realty.erealty.entity.PasswordResetToken;
@@ -12,9 +13,15 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 public class ResettingPasswordControllerTest extends BaseSpringBootTest {
+    @BeforeEach
+    public void verifyNoInteractionsWithMockBeans() {
+        verifyNoInteractions(userRepository, customTokenRepository);
+    }
+
     @Test
     void forgotPasswordShouldWork() {
         WebTestClientRequestGenerator.generateWebTestClientRequest(
