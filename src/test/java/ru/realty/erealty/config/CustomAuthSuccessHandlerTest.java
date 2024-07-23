@@ -2,12 +2,14 @@ package ru.realty.erealty.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import ru.realty.erealty.constant.UserRole;
 import ru.realty.erealty.support.BaseSpringBootTest;
+
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 public class CustomAuthSuccessHandlerTest extends BaseSpringBootTest {
     @Test
@@ -15,9 +17,9 @@ public class CustomAuthSuccessHandlerTest extends BaseSpringBootTest {
         HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
         Authentication authentication = new TestingAuthenticationToken("test", "test",
-                "ROLE_ADMIN");
+                UserRole.ADMIN_ROLE);
 
-        Assertions.assertThatNoException()
+        assertThatNoException()
                 .isThrownBy(() -> customAuthSuccessHandler.onAuthenticationSuccess(
                         httpServletRequest,
                         httpServletResponse,
@@ -30,9 +32,9 @@ public class CustomAuthSuccessHandlerTest extends BaseSpringBootTest {
         HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
         Authentication authentication = new TestingAuthenticationToken("test", "test",
-                "ROLE_USER");
+                UserRole.USER_ROLE);
 
-        Assertions.assertThatNoException()
+        assertThatNoException()
                 .isThrownBy(() -> customAuthSuccessHandler.onAuthenticationSuccess(
                         httpServletRequest,
                         httpServletResponse,

@@ -1,23 +1,28 @@
 package ru.realty.erealty.controller;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.test.context.support.WithMockUser;
+import ru.realty.erealty.constant.UserEmail;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.support.BaseSpringBootTest;
 import ru.realty.erealty.util.DataProvider;
 import ru.realty.erealty.util.WebTestClientRequestGenerator;
+import ru.realty.erealty.constant.UserRole;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class UserControllerTest extends BaseSpringBootTest {
     @Test
-    @WithMockUser(username = "test@test.com")
+    @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void profileShouldWork() {
         User user = DataProvider.userBuilder().build();
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.ofNullable(user));
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -41,12 +46,9 @@ public class UserControllerTest extends BaseSpringBootTest {
     @Test
     @WithMockUser(username = "admin@test.com", roles = "ADMIN")
     void deleteUsersShouldWork() {
-        User user = DataProvider.userBuilder()
-                .id(1)
-                .role("ROLE_ADMIN")
-                .balance(BigDecimal.valueOf(100_000L))
-                .build();
-        Mockito.when(userRepository.findByEmail("admin@test.com"))
+        User user = DataProvider.createUserWithBalanceAndRole(1, UserRole.ADMIN_ROLE, BigDecimal.valueOf(100_000L));
+
+        when(userRepository.findByEmail("admin@test.com"))
                 .thenReturn(Optional.of(user));
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -55,6 +57,8 @@ public class UserControllerTest extends BaseSpringBootTest {
                 "/deleteUsers",
                 200
         );
+
+        verify(userRepository).findByEmail("admin@test.com");
     }
 
     @Test

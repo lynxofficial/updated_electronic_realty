@@ -1,11 +1,13 @@
 package ru.realty.erealty.service.file;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.realty.erealty.support.BaseSpringBootTest;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class FileHandlingHttpResponseServiceTest extends BaseSpringBootTest {
     @Test
@@ -13,7 +15,7 @@ class FileHandlingHttpResponseServiceTest extends BaseSpringBootTest {
         CompletableFuture<byte[]> actualCompletableFuture = fileHandlingHttpResponseService
                 .attachImage("link");
 
-        Assertions.assertThat(actualCompletableFuture)
+        assertThat(actualCompletableFuture)
                 .isNotNull();
     }
 
@@ -22,7 +24,7 @@ class FileHandlingHttpResponseServiceTest extends BaseSpringBootTest {
         CompletableFuture<byte[]> actualCompletableFuture = fileHandlingHttpResponseService
                 .attachImage("link");
 
-        Assertions.assertThatExceptionOfType(ExecutionException.class)
+        assertThatExceptionOfType(ExecutionException.class)
                 .isThrownBy(actualCompletableFuture::get);
     }
 }

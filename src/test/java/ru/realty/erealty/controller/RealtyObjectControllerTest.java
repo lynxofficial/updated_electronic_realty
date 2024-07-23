@@ -1,11 +1,11 @@
 package ru.realty.erealty.controller;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
+import ru.realty.erealty.constant.UserEmail;
+import ru.realty.erealty.constant.UserRole;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.support.BaseSpringBootTest;
@@ -13,18 +13,21 @@ import ru.realty.erealty.util.DataProvider;
 import ru.realty.erealty.util.WebTestClientRequestGenerator;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class RealtyObjectControllerTest extends BaseSpringBootTest {
     @Test
-    @WithMockUser(username = "test@test.com")
+    @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void getRealtyObjectShouldWork() {
-        User user = DataProvider.userBuilder()
-                .id(1)
-                .balance(BigDecimal.valueOf(100_000L))
-                .build();
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+        User user = DataProvider.createUserWithBalance(0);
+
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.of(user));
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -33,6 +36,8 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
                 "/realtyObject",
                 200
         );
+
+        verify(userRepository).findByEmail(UserEmail.DEFAULT_EMAIL);
     }
 
     @Test
@@ -66,13 +71,11 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
     }
 
     @Test
-    @WithMockUser(username = "test@test.com")
+    @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void getRealtyObjectsShouldWorkWithAuthenticatedUser() {
-        User user = DataProvider.userBuilder()
-                .id(1)
-                .balance(BigDecimal.valueOf(100_000L))
-                .build();
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+        User user = DataProvider.createUserWithBalance(0);
+
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.of(user));
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -81,6 +84,8 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
                 "/myRealtyObjects",
                 200
         );
+
+        verify(userRepository, times(2)).findByEmail(UserEmail.DEFAULT_EMAIL);
     }
 
     @Test
@@ -95,7 +100,7 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
 
     @Test
     void sellRealtyObjectThrowsException() {
-        Assertions.assertThatExceptionOfType(WebClientRequestException.class)
+        assertThatExceptionOfType(WebClientRequestException.class)
                 .isThrownBy(() -> WebTestClientRequestGenerator.generateWebTestClientRequest(
                         webTestClient,
                         HttpMethod.POST,
@@ -105,20 +110,15 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
     }
 
     @Test
-    @WithMockUser(username = "test@test.com")
+    @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void buyRealtyObjectShouldWork() {
-        User user = DataProvider.userBuilder()
-                .id(1)
-                .balance(BigDecimal.valueOf(100_000L))
-                .realtyObjects(new ArrayList<>())
-                .build();
-        RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
-                .user(user)
-                .build();
+        User user = DataProvider.createUserWithBalanceAndRealtyObjects(1);
+        RealtyObject realtyObject = DataProvider.createRealtyObjectWithUser(0, user);
         user.getRealtyObjects().add(realtyObject);
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.of(user));
-        Mockito.when(realtyObjectRepository.findById(1))
+        when(realtyObjectRepository.findById(1))
                 .thenReturn(Optional.ofNullable(realtyObject));
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -127,11 +127,14 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
                 "/buyRealtyObject/1",
                 200
         );
+
+        verify(userRepository).findByEmail(UserEmail.DEFAULT_EMAIL);
+        verify(realtyObjectRepository).findById(1);
     }
 
     @Test
     void buyRealtyObjectWithIdThrowsException() {
-        Assertions.assertThatExceptionOfType(WebClientRequestException.class)
+        assertThatExceptionOfType(WebClientRequestException.class)
                 .isThrownBy(() -> WebTestClientRequestGenerator.generateWebTestClientRequest(
                         webTestClient,
                         HttpMethod.GET,
@@ -142,7 +145,7 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
 
     @Test
     void buyRealtyObjectThrowsException() {
-        Assertions.assertThatExceptionOfType(WebClientRequestException.class)
+        assertThatExceptionOfType(WebClientRequestException.class)
                 .isThrownBy(() ->
                         WebTestClientRequestGenerator.generateWebTestClientRequest(
                                 webTestClient,
@@ -153,33 +156,28 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
     }
 
     @Test
-    @WithMockUser(username = "test@test.com")
+    @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void buyRealtyObjectWithDigitalSignatureShouldWork() {
-        User targetUser = DataProvider.userBuilder()
-                .balance(BigDecimal.valueOf(100_000L))
-                .realtyObjects(new ArrayList<>())
-                .build();
-        RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
-                .id(0)
-                .user(targetUser)
-                .price(BigDecimal.valueOf(100_000L))
-                .build();
+        User targetUser = DataProvider.createUserWithBalanceAndRealtyObjects(0);
+        RealtyObject realtyObject = DataProvider.createRealtyObjectWithUserAndPrice(
+                0,
+                targetUser,
+                BigDecimal.valueOf(100_000L)
+        );
         targetUser.getRealtyObjects().add(realtyObject);
-        Mockito.when(realtyObjectRepository.findById(realtyObject.getId()))
+        User currentUser = DataProvider.createUserWithBalance(1);
+
+        when(realtyObjectRepository.findById(realtyObject.getId()))
                 .thenReturn(Optional.of(realtyObject));
-        Mockito.when(userRepository.findById(realtyObject.getUser().getId()))
+        when(userRepository.findById(realtyObject.getUser().getId()))
                 .thenReturn(Optional.ofNullable(realtyObject.getUser()));
-        User currentUser = DataProvider.userBuilder()
-                .id(1)
-                .balance(BigDecimal.valueOf(100_000L))
-                .build();
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.of(currentUser));
-        Mockito.when(userRepository.save(currentUser))
+        when(userRepository.save(currentUser))
                 .thenReturn(currentUser);
-        Mockito.when(userRepository.save(realtyObject.getUser()))
+        when(userRepository.save(realtyObject.getUser()))
                 .thenReturn(realtyObject.getUser());
-        Mockito.doNothing()
+        doNothing()
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
@@ -189,30 +187,31 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
                 "/buyRealtyObject/0",
                 302
         );
+
+        verify(realtyObjectRepository).findById(realtyObject.getId());
+        verify(userRepository).findById(targetUser.getId());
+        verify(userRepository, times(2)).findByEmail(UserEmail.DEFAULT_EMAIL);
+        verify(userRepository).save(currentUser);
     }
 
     @Test
-    @WithMockUser(username = "test@test.com")
+    @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void buyRealtyObjectWithDigitalSignatureShouldNotWorkWithCurrentUserBalanceLessThanOne() {
-        User targetUser = DataProvider.userBuilder()
-                .balance(BigDecimal.valueOf(100_000L))
-                .build();
-        RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
-                .id(0)
-                .user(targetUser)
-                .build();
-        Mockito.when(realtyObjectRepository.findById(realtyObject.getId()))
-                .thenReturn(Optional.of(realtyObject));
-        Mockito.when(userRepository.findById(realtyObject.getUser().getId()))
-                .thenReturn(Optional.ofNullable(realtyObject.getUser()));
+        User targetUser = DataProvider.createUserWithBalance(0);
+        RealtyObject realtyObject = DataProvider.createRealtyObjectWithUser(0, targetUser);
         User currentUser = DataProvider.userBuilder().build();
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+
+        when(realtyObjectRepository.findById(realtyObject.getId()))
+                .thenReturn(Optional.of(realtyObject));
+        when(userRepository.findById(realtyObject.getUser().getId()))
+                .thenReturn(Optional.ofNullable(realtyObject.getUser()));
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.of(currentUser));
-        Mockito.when(userRepository.save(currentUser))
+        when(userRepository.save(currentUser))
                 .thenReturn(currentUser);
-        Mockito.when(userRepository.save(realtyObject.getUser()))
+        when(userRepository.save(realtyObject.getUser()))
                 .thenReturn(realtyObject.getUser());
-        Mockito.doNothing()
+        doNothing()
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
@@ -222,11 +221,15 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
                 "/buyRealtyObject/0",
                 200
         );
+
+        verify(realtyObjectRepository).findById(realtyObject.getId());
+        verify(userRepository).findById(realtyObject.getUser().getId());
+        verify(userRepository, times(2)).findByEmail(UserEmail.DEFAULT_EMAIL);
     }
 
     @Test
     void buyRealtyObjectWithDigitalSignatureThrowsException() {
-        Assertions.assertThatExceptionOfType(WebClientRequestException.class)
+        assertThatExceptionOfType(WebClientRequestException.class)
                 .isThrownBy(() -> WebTestClientRequestGenerator.generateWebTestClientRequest(
                         webTestClient,
                         HttpMethod.POST,
@@ -238,12 +241,9 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
     @Test
     @WithMockUser(username = "admin@test.com", roles = "ADMIN")
     void deleteRealtyObjectsShouldWork() {
-        User user = DataProvider.userBuilder()
-                .id(1)
-                .role("ROLE_ADMIN")
-                .balance(BigDecimal.valueOf(100_000L))
-                .build();
-        Mockito.when(userRepository.findByEmail("admin@test.com"))
+        User user = DataProvider.createUserWithBalanceAndRole(1, UserRole.ADMIN_ROLE, BigDecimal.valueOf(100_000L));
+
+        when(userRepository.findByEmail("admin@test.com"))
                 .thenReturn(Optional.of(user));
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -252,6 +252,8 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
                 "/deleteRealtyObjects",
                 200
         );
+
+        verify(userRepository).findByEmail("admin@test.com");
     }
 
     @Test
@@ -276,7 +278,7 @@ class RealtyObjectControllerTest extends BaseSpringBootTest {
 
     @Test
     void deleteRealtyObjectThrowsException() {
-        Assertions.assertThatExceptionOfType(WebClientRequestException.class)
+        assertThatExceptionOfType(WebClientRequestException.class)
                 .isThrownBy(() -> WebTestClientRequestGenerator.generateWebTestClientRequest(
                         webTestClient,
                         HttpMethod.POST,

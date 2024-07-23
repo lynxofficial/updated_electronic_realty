@@ -8,6 +8,8 @@ import java.security.SignatureException;
 
 public interface DigitalSignatureGenerationService {
 
-    void generateDigitalSignature(String passwordForDigitalSignature, User user) throws NoSuchAlgorithmException,
-            InvalidKeyException, SignatureException;
+    void generateDigitalSignature(
+            String passwordForDigitalSignature,
+            User user
+    ) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException;
 }

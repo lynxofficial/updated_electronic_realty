@@ -1,20 +1,21 @@
 package ru.realty.erealty.service.custom.impl;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import ru.realty.erealty.support.BaseSpringBootTest;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.util.DataProvider;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 class CustomTokenServiceImplTest extends BaseSpringBootTest {
     @Test
     void findByTokenShouldWork() {
         PasswordResetToken passwordResetToken = DataProvider.passwordResetTokenBuilder()
                 .token("123").build();
-        Mockito.when(customTokenRepository.findByToken("123")).thenReturn(passwordResetToken);
+        when(customTokenRepository.findByToken("123")).thenReturn(passwordResetToken);
 
-        Assertions.assertThat(customTokenServiceImpl.findByToken("123"))
+        assertThat(customTokenServiceImpl.findByToken("123"))
                 .isEqualTo(passwordResetToken);
     }
 
@@ -22,10 +23,10 @@ class CustomTokenServiceImplTest extends BaseSpringBootTest {
     void findByTokenShouldNotWork() {
         PasswordResetToken passwordResetToken = DataProvider.passwordResetTokenBuilder()
                 .token("123").build();
-        Mockito.when(customTokenRepository.findByToken("12345"))
+        when(customTokenRepository.findByToken("12345"))
                 .thenReturn(passwordResetToken);
 
-        Assertions.assertThat(customTokenServiceImpl.findByToken("123"))
+        assertThat(customTokenServiceImpl.findByToken("123"))
                 .isNotEqualTo(passwordResetToken);
     }
 }

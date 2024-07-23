@@ -1,6 +1,5 @@
 package ru.realty.erealty.service.mail.impl;
 
-import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,6 +10,8 @@ import ru.realty.erealty.util.DataProvider;
 
 import java.time.Duration;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class MailSendingServiceImplTest extends BaseSpringBootTest {
     @Test
@@ -35,7 +36,7 @@ class MailSendingServiceImplTest extends BaseSpringBootTest {
                 .build();
         String url = "test.com";
 
-        Assertions.assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> Awaitility.await()
                         .atMost(Duration.ofSeconds(5L))
                         .untilAsserted(() -> mailSendingServiceImpl.sendEmail(user, url)));
@@ -61,7 +62,7 @@ class MailSendingServiceImplTest extends BaseSpringBootTest {
         Mockito.when(userRepository.findByEmail(user.getEmail()))
                 .thenReturn(Optional.of(user));
 
-        Assertions.assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> Awaitility.await()
                         .atMost(Duration.ofSeconds(1L))
                         .untilAsserted(() -> mailSendingServiceImpl.sendEmail(null)));

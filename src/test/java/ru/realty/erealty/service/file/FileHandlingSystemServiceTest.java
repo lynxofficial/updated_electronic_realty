@@ -16,13 +16,11 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class FileHandlingSystemServiceTest extends BaseSpringBootTest {
     @Test
     void attachImageShouldWork() throws MessagingException, UnsupportedEncodingException {
-//        precondition ----
-//      prepare mocks
-
-//      prepare test data
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         User user = DataProvider.userBuilder()
@@ -31,18 +29,15 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
                 .build();
         String url = "test-url.com";
         MailHelperGenerator.generateMailHelper(javaMailSender, user, url);
-//        ------
 
-//      real service call
         fileHandlingSystemService.attachImage(helper);
 
-//      verification
         Awaitility.await().atMost(Duration.ofSeconds(5L))
-                .untilAsserted(() -> {
-                    fileHandlingSystemService.attachImage(helper);
-                });
+                .untilAsserted(() -> fileHandlingSystemService.attachImage(helper));
+
         List<CompletableFuture<byte[]>> completableFutures = fileHandlingSystemService.attachImage(helper);
-        Assertions.assertThat(completableFutures)
+
+        assertThat(completableFutures)
                 .isNotNull();
     }
 
@@ -61,9 +56,7 @@ class FileHandlingSystemServiceTest extends BaseSpringBootTest {
 
         Assertions.assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> Awaitility.await().atMost(Duration.ofSeconds(5L))
-                        .untilAsserted(() -> {
-                            fileHandlingSystemService.attachImage(null);
-                        }));
+                        .untilAsserted(() -> fileHandlingSystemService.attachImage(null)));
     }
 
     @Test

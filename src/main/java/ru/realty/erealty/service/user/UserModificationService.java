@@ -12,7 +12,11 @@ public interface UserModificationService {
 
     Optional<User> saveUser(User user, String url);
 
-    void saveUser(User user, HttpSession httpSession, HttpServletRequest httpServletRequest);
+    void saveUser(
+            User user,
+            HttpSession httpSession,
+            HttpServletRequest httpServletRequest
+    );
 
     void removeSessionMessage();
 

@@ -14,10 +14,12 @@ import java.util.concurrent.ExecutionException;
 public class PreparingCompletableFutureAttachmentService {
     public void prepareCompletableFutureAttachment(
             final CompletableFuture<byte[]> completableFuture,
-            final MimeMessageHelper messageHelper
+            final MimeMessageHelper messageHelper,
+            final String imageLink
     ) {
         try {
-            messageHelper.addAttachment("image.png", new ByteArrayResource(completableFuture.get()));
+            messageHelper.addAttachment(imageLink.substring(imageLink.lastIndexOf('/') + 1),
+                    new ByteArrayResource(completableFuture.get()));
         } catch (InterruptedException | ExecutionException | MessagingException e) {
             throw new RuntimeException(e);
         }

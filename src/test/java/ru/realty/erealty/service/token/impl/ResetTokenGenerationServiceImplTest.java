@@ -1,12 +1,13 @@
 package ru.realty.erealty.service.token.impl;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import ru.realty.erealty.support.BaseSpringBootTest;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.util.DataProvider;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 class ResetTokenGenerationServiceImplTest extends BaseSpringBootTest {
     @Test
@@ -16,14 +17,14 @@ class ResetTokenGenerationServiceImplTest extends BaseSpringBootTest {
                 .user(user)
                 .token(null)
                 .build();
-        Mockito.when(customTokenRepository.save(passwordResetToken))
+        when(customTokenRepository.save(passwordResetToken))
                 .thenReturn(passwordResetToken);
 
         resetTokenGenerationServiceImpl.generateResetToken(user);
 
-        Assertions.assertThat(passwordResetToken.getToken())
+        assertThat(passwordResetToken.getToken())
                 .isNull();
-        Assertions.assertThat(passwordResetToken.getUser())
+        assertThat(passwordResetToken.getUser())
                 .isNotNull();
     }
 
@@ -32,12 +33,12 @@ class ResetTokenGenerationServiceImplTest extends BaseSpringBootTest {
         PasswordResetToken passwordResetToken = DataProvider.passwordResetTokenBuilder()
                 .user(null)
                 .build();
-        Mockito.when(customTokenRepository.save(passwordResetToken))
+        when(customTokenRepository.save(passwordResetToken))
                 .thenReturn(passwordResetToken);
 
         resetTokenGenerationServiceImpl.generateResetToken(null);
 
-        Assertions.assertThat(passwordResetToken.getUser())
+        assertThat(passwordResetToken.getUser())
                 .isNull();
     }
 }

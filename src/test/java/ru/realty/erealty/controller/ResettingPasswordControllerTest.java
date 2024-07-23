@@ -1,7 +1,6 @@
 package ru.realty.erealty.controller;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpMethod;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.User;
@@ -9,8 +8,11 @@ import ru.realty.erealty.support.BaseSpringBootTest;
 import ru.realty.erealty.util.DataProvider;
 import ru.realty.erealty.util.WebTestClientRequestGenerator;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ResettingPasswordControllerTest extends BaseSpringBootTest {
     @Test
@@ -37,7 +39,8 @@ public class ResettingPasswordControllerTest extends BaseSpringBootTest {
     void forgotPasswordProcessShouldWorkWithNotNullTargetUser() {
         User user = DataProvider.userBuilder()
                 .build();
-        Mockito.when(userRepository.findByEmail(null))
+
+        when(userRepository.findByEmail(null))
                 .thenReturn(Optional.ofNullable(user));
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -46,6 +49,8 @@ public class ResettingPasswordControllerTest extends BaseSpringBootTest {
                 "/forgotPassword",
                 302
         );
+
+        verify(userRepository, times(2)).findByEmail(null);
     }
 
     @Test
@@ -70,10 +75,10 @@ public class ResettingPasswordControllerTest extends BaseSpringBootTest {
 
     @Test
     void resetPasswordFormShouldWorkWithPasswordResetToken() {
-        PasswordResetToken passwordResetToken = DataProvider.passwordResetTokenBuilder()
-                .expiryDateTime(LocalDateTime.now().plusMinutes(45))
-                .build();
-        Mockito.when(customTokenRepository.findByToken(passwordResetToken.getToken()))
+        PasswordResetToken passwordResetToken = DataProvider
+                .createPasswordResetTokenWithExpiryDateTimePlusMinutes(0, 45L);
+
+        when(customTokenRepository.findByToken(passwordResetToken.getToken()))
                 .thenReturn(passwordResetToken);
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -82,11 +87,13 @@ public class ResettingPasswordControllerTest extends BaseSpringBootTest {
                 "/resetPassword/123456",
                 200
         );
+
+        verify(customTokenRepository).findByToken(passwordResetToken.getToken());
     }
 
     @Test
     void resetPasswordFormShouldNotWorkWithNullPasswordResetToken() {
-        Mockito.when(customTokenRepository.findByToken("123456"))
+        when(customTokenRepository.findByToken("123456"))
                 .thenReturn(null);
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -95,14 +102,16 @@ public class ResettingPasswordControllerTest extends BaseSpringBootTest {
                 "/resetPassword/123456",
                 302
         );
+
+        verify(customTokenRepository).findByToken("123456");
     }
 
     @Test
     void resetPasswordFormShouldNotWorkWithExpiredDateTime() {
-        PasswordResetToken passwordResetToken = DataProvider.passwordResetTokenBuilder()
-                .expiryDateTime(LocalDateTime.now().minusMinutes(30))
-                .build();
-        Mockito.when(customTokenRepository.findByToken("123456"))
+        PasswordResetToken passwordResetToken = DataProvider
+                .createPasswordResetTokenWithExpiryDateTimeMinutesMinutes(0, 30L);
+
+        when(customTokenRepository.findByToken("123456"))
                 .thenReturn(passwordResetToken);
 
         WebTestClientRequestGenerator.generateWebTestClientRequest(
@@ -111,6 +120,8 @@ public class ResettingPasswordControllerTest extends BaseSpringBootTest {
                 "/resetPassword/123456",
                 302
         );
+
+        verify(customTokenRepository).findByToken("123456");
     }
 
     @Test

@@ -1,8 +1,6 @@
 package ru.realty.erealty.service.signature.impl;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import ru.realty.erealty.support.BaseSpringBootTest;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.util.DataProvider;
@@ -12,6 +10,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.when;
+
 class DigitalSignatureGenerationServiceImplTest extends BaseSpringBootTest {
     @Test
     void generateDigitalSignatureShouldWork() throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
@@ -19,11 +21,11 @@ class DigitalSignatureGenerationServiceImplTest extends BaseSpringBootTest {
         User user = DataProvider.userBuilder()
                 .email("123@mail.ru")
                 .build();
-        Mockito.when(userRepository.findByEmail("123@mail.ru")).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("123@mail.ru")).thenReturn(Optional.of(user));
 
         digitalSignatureGenerationServiceImpl.generateDigitalSignature(passwordForDigitalSignature, user);
 
-        Assertions.assertThat(user.getDigitalSignature())
+        assertThat(user.getDigitalSignature())
                 .isNotNull();
     }
 
@@ -33,10 +35,10 @@ class DigitalSignatureGenerationServiceImplTest extends BaseSpringBootTest {
                 .email("123@mail.ru")
                 .passwordForDigitalSignature(null)
                 .build();
-        Mockito.when(userRepository.findByEmail("123@mail.ru"))
+        when(userRepository.findByEmail("123@mail.ru"))
                 .thenReturn(Optional.of(user));
 
-        Assertions.assertThatExceptionOfType(NullPointerException.class)
+        assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> digitalSignatureGenerationServiceImpl
                         .generateDigitalSignature(user.getPasswordForDigitalSignature(), user));
     }

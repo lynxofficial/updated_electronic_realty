@@ -1,11 +1,10 @@
 package ru.realty.erealty.service.realty.impl;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.multipart.MultipartFile;
+import ru.realty.erealty.constant.UserEmail;
 import ru.realty.erealty.support.BaseSpringBootTest;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
@@ -20,48 +19,54 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+
 class RealtyObjectServiceImplTest extends BaseSpringBootTest {
     @Test
     void findAllShouldWork() {
-        Mockito.when(realtyObjectRepository.findAll())
+        when(realtyObjectRepository.findAll())
                 .thenReturn(List.of(DataProvider.realtyObjectBuilder().build(),
                         DataProvider.realtyObjectBuilder().build()));
 
         List<RealtyObject> realtyObjects = realtyObjectServiceImpl.findAll();
 
-        Assertions.assertThat(realtyObjectRepository.findAll())
+        assertThat(realtyObjectRepository.findAll())
                 .isEqualTo(realtyObjects);
     }
 
     @Test
     void findAllThrowsException() {
-        Mockito.when(realtyObjectRepository.findAll())
+        when(realtyObjectRepository.findAll())
                 .thenReturn(List.of(DataProvider.realtyObjectBuilder().build(),
                         DataProvider.realtyObjectBuilder().build()));
 
         List<RealtyObject> realtyObjects = realtyObjectServiceImpl.findAll();
 
-        Assertions.assertThatExceptionOfType(UnsupportedOperationException.class)
+        assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> realtyObjects.add(DataProvider.realtyObjectBuilder().build()));
     }
 
     @Test
     void buyRealtyObjectShouldWork() throws RealtyObjectNotFoundException {
-        Mockito.when(realtyObjectRepository.findById(0))
+        when(realtyObjectRepository.findById(0))
                 .thenReturn(Optional.of(DataProvider.realtyObjectBuilder().build()));
 
         RealtyObject realtyObject = realtyObjectServiceImpl.buyRealtyObject("0");
 
-        Assertions.assertThat(realtyObjectRepository.findById(0).orElseThrow())
+        assertThat(realtyObjectRepository.findById(0).orElseThrow())
                 .isEqualTo(realtyObject);
     }
 
     @Test
     void buyRealtyObjectThrowsException() {
-        Mockito.when(realtyObjectRepository.findById(0))
+        when(realtyObjectRepository.findById(0))
                 .thenReturn(Optional.of(DataProvider.realtyObjectBuilder().build()));
 
-        Assertions.assertThatExceptionOfType(RealtyObjectNotFoundException.class)
+        assertThatExceptionOfType(RealtyObjectNotFoundException.class)
                 .isThrownBy(() -> realtyObjectServiceImpl.buyRealtyObject("1"));
     }
 
@@ -74,16 +79,16 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
         RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
                 .price(BigDecimal.valueOf(100_000L))
                 .build();
-        Mockito.when(realtyObjectRepository.save(realtyObject))
-                .thenReturn(realtyObject);
-
         MultipartFile multipartFile = new MockMultipartFile("realtyObjectImageForTest.png",
                 "realtyObjectImageForTest.png", "text/plain",
                 new FileInputStream("src/main/resources/images/realtyObjectImageForTest.png"));
 
+        when(realtyObjectRepository.save(realtyObject))
+                .thenReturn(realtyObject);
+
         realtyObjectServiceImpl.sellRealtyObject(user, realtyObject, multipartFile);
 
-        Assertions.assertThat(user)
+        assertThat(user)
                 .isEqualTo(realtyObject.getUser());
     }
 
@@ -96,16 +101,16 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
         RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
                 .price(null)
                 .build();
-        Mockito.when(realtyObjectRepository.save(realtyObject))
-                .thenReturn(realtyObject);
-
         MultipartFile multipartFile = new MockMultipartFile("realtyObjectImageForTest.png",
                 "realtyObjectImageForTest.png", "text/plain",
                 new FileInputStream("src/main/resources/images/realtyObjectImageForTest.png"));
 
+        when(realtyObjectRepository.save(realtyObject))
+                .thenReturn(realtyObject);
+
         realtyObjectServiceImpl.sellRealtyObject(user, realtyObject, multipartFile);
 
-        Assertions.assertThat(user)
+        assertThat(user)
                 .isEqualTo(realtyObject.getUser());
     }
 
@@ -118,18 +123,18 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
         RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
                 .price(BigDecimal.valueOf(100_000L))
                 .build();
-        Mockito.when(realtyObjectRepository.save(realtyObject))
-                .thenReturn(realtyObject);
-
         MultipartFile multipartFile = new MockMultipartFile("realtyObjectImageForTest.png",
                 new FileInputStream("src/main/resources/images/realtyObjectImageForTest.png"));
 
-        Assertions.assertThatExceptionOfType(AccessDeniedException.class)
+        when(realtyObjectRepository.save(realtyObject))
+                .thenReturn(realtyObject);
+
+        assertThatExceptionOfType(AccessDeniedException.class)
                 .isThrownBy(() -> realtyObjectServiceImpl.sellRealtyObject(user, realtyObject, multipartFile));
     }
 
     @Test
-    @WithMockUser(username = "test@test.com")
+    @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void buyRealtyObjectWithDigitalSignatureShouldWork() throws RealtyObjectNotFoundException {
         User targetUser = DataProvider.userBuilder()
                 .balance(BigDecimal.valueOf(1_000_000L))
@@ -140,30 +145,32 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .price(BigDecimal.valueOf(1_000_000L))
                 .build();
         targetUser.getRealtyObjects().add(realtyObject);
-        Mockito.when(realtyObjectRepository.findById(realtyObject.getId()))
-                .thenReturn(Optional.of(realtyObject));
-        Mockito.when(userRepository.findById(realtyObject.getUser().getId()))
-                .thenReturn(Optional.ofNullable(realtyObject.getUser()));
+
         User currentUser = DataProvider.userBuilder()
                 .id(1)
                 .balance(BigDecimal.valueOf(1_000_000L))
                 .build();
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+
+        when(realtyObjectRepository.findById(realtyObject.getId()))
+                .thenReturn(Optional.of(realtyObject));
+        when(userRepository.findById(realtyObject.getUser().getId()))
+                .thenReturn(Optional.ofNullable(realtyObject.getUser()));
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.of(currentUser));
-        Mockito.when(userRepository.save(currentUser))
+        when(userRepository.save(currentUser))
                 .thenReturn(currentUser);
-        Mockito.when(userRepository.save(realtyObject.getUser()))
+        when(userRepository.save(realtyObject.getUser()))
                 .thenReturn(realtyObject.getUser());
-        Mockito.doNothing()
+        doNothing()
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThat(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()))
+        assertThat(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()))
                 .isTrue();
     }
 
     @Test
-    @WithMockUser(username = "test@test.com")
+    @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void buyRealtyObjectWithDigitalSignatureShouldNotWorkWithCurrentUserBalanceLessThanOne()
             throws RealtyObjectNotFoundException {
         User targetUser = DataProvider.userBuilder()
@@ -172,27 +179,28 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
         RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
                 .user(targetUser)
                 .build();
-        Mockito.when(realtyObjectRepository.findById(realtyObject.getId()))
-                .thenReturn(Optional.of(realtyObject));
-        Mockito.when(userRepository.findById(realtyObject.getUser().getId()))
-                .thenReturn(Optional.ofNullable(realtyObject.getUser()));
         User currentUser = DataProvider.userBuilder().build();
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+
+        when(realtyObjectRepository.findById(realtyObject.getId()))
+                .thenReturn(Optional.of(realtyObject));
+        when(userRepository.findById(realtyObject.getUser().getId()))
+                .thenReturn(Optional.ofNullable(realtyObject.getUser()));
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.of(currentUser));
-        Mockito.when(userRepository.save(currentUser))
+        when(userRepository.save(currentUser))
                 .thenReturn(currentUser);
-        Mockito.when(userRepository.save(realtyObject.getUser()))
+        when(userRepository.save(realtyObject.getUser()))
                 .thenReturn(realtyObject.getUser());
-        Mockito.doNothing()
+        doNothing()
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThat(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()))
+        assertThat(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()))
                 .isFalse();
     }
 
     @Test
-    @WithMockUser(username = "test@test.com")
+    @WithMockUser(username = UserEmail.DEFAULT_EMAIL)
     void buyRealtyObjectWithDigitalSignatureShouldReturnTrueWhenCurrentUserBalanceIsNull()
             throws RealtyObjectNotFoundException {
         User targetUser = DataProvider.userBuilder()
@@ -201,24 +209,24 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
         RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
                 .user(targetUser)
                 .build();
-        Mockito.when(realtyObjectRepository.findById(realtyObject.getId()))
+        when(realtyObjectRepository.findById(realtyObject.getId()))
                 .thenReturn(Optional.of(realtyObject));
-        Mockito.when(userRepository.findById(realtyObject.getUser().getId()))
+        when(userRepository.findById(realtyObject.getUser().getId()))
                 .thenReturn(Optional.ofNullable(realtyObject.getUser()));
         User currentUser = DataProvider.userBuilder()
                 .balance(null)
                 .build();
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.of(currentUser));
-        Mockito.when(userRepository.save(currentUser))
+        when(userRepository.save(currentUser))
                 .thenReturn(currentUser);
-        Mockito.when(userRepository.save(realtyObject.getUser()))
+        when(userRepository.save(realtyObject.getUser()))
                 .thenReturn(realtyObject.getUser());
-        Mockito.doNothing()
+        doNothing()
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThat(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()))
+        assertThat(realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()))
                 .isTrue();
     }
 
@@ -230,35 +238,36 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
         RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
                 .user(user)
                 .build();
-        Mockito.when(realtyObjectRepository.findById(realtyObject.getId()))
-                .thenReturn(Optional.of(realtyObject));
-        Mockito.when(userRepository.findById(realtyObject.getUser().getId()))
-                .thenReturn(Optional.ofNullable(realtyObject.getUser()));
         User targetUser = DataProvider.userBuilder().build();
-        Mockito.when(userRepository.findByEmail("test@test.com"))
+
+        when(realtyObjectRepository.findById(realtyObject.getId()))
+                .thenReturn(Optional.of(realtyObject));
+        when(userRepository.findById(realtyObject.getUser().getId()))
+                .thenReturn(Optional.ofNullable(realtyObject.getUser()));
+        when(userRepository.findByEmail(UserEmail.DEFAULT_EMAIL))
                 .thenReturn(Optional.of(targetUser));
-        Mockito.when(userRepository.save(targetUser))
+        when(userRepository.save(targetUser))
                 .thenReturn(targetUser);
-        Mockito.when(userRepository.save(realtyObject.getUser()))
+        when(userRepository.save(realtyObject.getUser()))
                 .thenReturn(realtyObject.getUser());
-        Mockito.doNothing()
+        doNothing()
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThatExceptionOfType(NullPointerException.class)
+        assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> realtyObjectServiceImpl.buyRealtyObjectWithDigitalSignature(realtyObject.getId()));
     }
 
     @Test
     void deleteRealtyObjectThrowsException() {
         RealtyObject realtyObject = DataProvider.realtyObjectBuilder().build();
-        Mockito.when(realtyObjectRepository.findById(realtyObject.getId()))
+        when(realtyObjectRepository.findById(realtyObject.getId()))
                 .thenReturn(Optional.of(realtyObject));
-        Mockito.doNothing()
+        doNothing()
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThatExceptionOfType(NullPointerException.class)
+        assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> realtyObjectServiceImpl.deleteRealtyObject(realtyObject));
     }
 
@@ -271,13 +280,13 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .build();
         realtyObject.setUser(user);
         user.getRealtyObjects().add(realtyObject);
-        Mockito.when(realtyObjectRepository.findById(realtyObject.getId()))
+        when(realtyObjectRepository.findById(realtyObject.getId()))
                 .thenReturn(Optional.of(realtyObject));
-        Mockito.doNothing()
+        doNothing()
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThatNoException()
+        assertThatNoException()
                 .isThrownBy(() -> realtyObjectServiceImpl.deleteRealtyObject(realtyObject));
     }
 
@@ -290,13 +299,13 @@ class RealtyObjectServiceImplTest extends BaseSpringBootTest {
                 .build();
         realtyObject.setUser(null);
         user.getRealtyObjects().add(realtyObject);
-        Mockito.when(realtyObjectRepository.findById(realtyObject.getId()))
+        when(realtyObjectRepository.findById(realtyObject.getId()))
                 .thenReturn(Optional.of(realtyObject));
-        Mockito.doNothing()
+        doNothing()
                 .when(realtyObjectRepository)
                 .delete(realtyObject);
 
-        Assertions.assertThatExceptionOfType(AssertionError.class)
+        assertThatExceptionOfType(AssertionError.class)
                 .isThrownBy(() -> realtyObjectServiceImpl.deleteRealtyObject(realtyObject));
     }
 }

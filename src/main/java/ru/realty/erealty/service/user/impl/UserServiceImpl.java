@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.realty.erealty.constant.UserRole;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.repository.UserRepository;
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     ) {
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
-        user.setRole("ROLE_USER");
+        user.setRole(UserRole.USER_ROLE);
         user.setEnable(false);
         user.setVerificationCode(UUID.randomUUID().toString());
         User savedUser = userRepository.save(user);

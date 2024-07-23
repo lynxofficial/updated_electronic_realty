@@ -1,8 +1,6 @@
 package ru.realty.erealty.service.template.user.impl;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import ru.realty.erealty.support.BaseSpringBootTest;
@@ -10,10 +8,13 @@ import ru.realty.erealty.util.DataProvider;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 public class UserTemplateFillingServiceImplTest extends BaseSpringBootTest {
     @Test
     void fillDeleteUserTemplateShouldWork() {
-        Mockito.when(userRepository.findAll())
+        when(userRepository.findAll())
                 .thenReturn(List.of(
                         DataProvider.userBuilder().build(),
                         DataProvider.userBuilder().build()
@@ -23,13 +24,13 @@ public class UserTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         userTemplateFillingServiceImpl.fillDeleteUserTemplate(model);
 
-        Assertions.assertThat(model.containsAttribute("users"))
+        assertThat(model.containsAttribute("users"))
                 .isTrue();
     }
 
     @Test
     void fillDeleteUserTemplateShouldNotWork() {
-        Mockito.when(userRepository.findAll())
+        when(userRepository.findAll())
                 .thenReturn(List.of(
                         DataProvider.userBuilder().build(),
                         DataProvider.userBuilder().build()
@@ -40,9 +41,9 @@ public class UserTemplateFillingServiceImplTest extends BaseSpringBootTest {
 
         userTemplateFillingServiceImpl.fillDeleteUserTemplate(model);
 
-        Assertions.assertThat(model.containsAttribute("users"))
+        assertThat(model.containsAttribute("users"))
                 .isTrue();
-        Assertions.assertThat(model.asMap().size())
+        assertThat(model.asMap().size())
                 .isNotEqualTo(1);
     }
 }

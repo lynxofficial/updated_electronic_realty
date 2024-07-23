@@ -14,7 +14,11 @@ public interface RealtyObjectService {
 
     RealtyObject buyRealtyObject(String id) throws RealtyObjectNotFoundException;
 
-    void sellRealtyObject(User user, RealtyObject realtyObject, MultipartFile file) throws IOException;
+    void sellRealtyObject(
+            User user,
+            RealtyObject realtyObject,
+            MultipartFile file
+    ) throws IOException;
 
     Boolean buyRealtyObjectWithDigitalSignature(Integer id) throws RealtyObjectNotFoundException;
 

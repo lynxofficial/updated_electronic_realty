@@ -1,7 +1,6 @@
 package ru.realty.erealty.service.future;
 
 import jakarta.mail.MessagingException;
-import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +14,8 @@ import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class PreparingCompletableFutureAttachmentServiceTest extends BaseSpringBootTest {
     @Value("${default.image.links}")
@@ -32,7 +33,7 @@ class PreparingCompletableFutureAttachmentServiceTest extends BaseSpringBootTest
         Awaitility.await()
                 .atMost(Duration.ofSeconds(5L))
                 .untilAsserted(() -> preparingCompletableFutureAttachmentService
-                        .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper));
+                        .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper, url));
     }
 
     @Test
@@ -44,10 +45,10 @@ class PreparingCompletableFutureAttachmentServiceTest extends BaseSpringBootTest
         CompletableFuture<byte[]> completableFuture = fileHandlingHttpResponseService.attachImage(url);
         MimeMessageHelper mimeMessageHelper = MailHelperGenerator.generateMailHelper(javaMailSender, user, null);
 
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> Awaitility.await()
                         .atMost(Duration.ofNanos(1L))
                         .untilAsserted(() -> preparingCompletableFutureAttachmentService
-                                .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper)));
+                                .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper, url)));
     }
 }
