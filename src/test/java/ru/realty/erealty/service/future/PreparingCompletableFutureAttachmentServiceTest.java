@@ -2,8 +2,8 @@ package ru.realty.erealty.service.future;
 
 import jakarta.mail.MessagingException;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import ru.realty.erealty.support.BaseSpringBootTest;
 import ru.realty.erealty.entity.User;
@@ -12,23 +12,28 @@ import ru.realty.erealty.util.MailHelperGenerator;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 class PreparingCompletableFutureAttachmentServiceTest extends BaseSpringBootTest {
+    @Value("${default.image.links}")
+    private List<String> imageLinks;
+
     @Test
     void prepareCompletableFutureAttachmentShouldWork() throws MessagingException, UnsupportedEncodingException {
         User user = DataProvider.userBuilder()
                 .fullName("test test test")
                 .build();
-        String url = "https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images"
-                + "/firstImageForDownloadingHttpRequest.png";
-        CompletableFuture<String> completableFuture = fileHandlingHttpResponseService.attachImage(url);
+        String url = imageLinks.getFirst();
+        CompletableFuture<byte[]> completableFuture = fileHandlingHttpResponseService.attachImage(url);
         MimeMessageHelper mimeMessageHelper = MailHelperGenerator.generateMailHelper(javaMailSender, user, url);
 
         Awaitility.await()
                 .atMost(Duration.ofSeconds(5L))
                 .untilAsserted(() -> preparingCompletableFutureAttachmentService
-                        .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper));
+                        .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper, url));
     }
 
     @Test
@@ -36,13 +41,14 @@ class PreparingCompletableFutureAttachmentServiceTest extends BaseSpringBootTest
         User user = DataProvider.userBuilder()
                 .fullName("test test test")
                 .build();
-        String url = "https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images";
-        CompletableFuture<String> completableFuture = fileHandlingHttpResponseService.attachImage(url);
+        String url = imageLinks.getFirst();
+        CompletableFuture<byte[]> completableFuture = fileHandlingHttpResponseService.attachImage(url);
         MimeMessageHelper mimeMessageHelper = MailHelperGenerator.generateMailHelper(javaMailSender, user, null);
 
-        Assertions.assertThrows(RuntimeException.class, () -> Awaitility.await()
-                .atMost(Duration.ofSeconds(1L))
-                .untilAsserted(() -> preparingCompletableFutureAttachmentService
-                        .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper)));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Awaitility.await()
+                        .atMost(Duration.ofNanos(1L))
+                        .untilAsserted(() -> preparingCompletableFutureAttachmentService
+                                .prepareCompletableFutureAttachment(completableFuture, mimeMessageHelper, url)));
     }
 }

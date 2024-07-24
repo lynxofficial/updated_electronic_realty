@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="Layout(content)"
+      th:replace="base::Layout(~{::section})">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+</head>
+<body>
+<section>
+    <div style="text-align: center;">
+        <h1>Главная страница</h1>
+    </div>
+    <table>
+        <tr th:each="user : ${users}">
+            <center>
+                <form th:action="@{/deleteUser}" method="post">
+                    <th:block th:if="${user.role}!='ROLE_ADMIN'">
+                        <div class="card w-50" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${user.fullName}"/>
+                                <p class="card-text" th:text="${'ID пользователя: '+user.id}"/>
+                                <p class="card-text" th:text="${'email: '+user.email}"/>
+                                <input type="hidden" name="email" id="email" th:value="${user.email}" required>
+                                <input type="hidden" name="userId" id="id" th:value="${user.id}" required>
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="modal">
+                                    Удалить
+                                </button>
+                            </div>
+                        </div>
+                    </th:block>
+                </form>
+            </center>
+        </tr>
+    </table>
+</section>
+</body>
+</html>

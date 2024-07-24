@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="Layout(content)"
+      th:replace="base::Layout(~{::section})">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+<section>
+    <div style="text-align: center;">
+        <h1>Агентства по недвижимости</h1>
+    </div>
+    <table>
+        <tr th:each="agency : ${agencies}">
+            <center>
+                <div class="card w-50" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${agency.name}"/>
+                        <p class="card-text" th:text="${'ID объекта: '+agency.id}"/>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                th:data-bs-target="${'#'+agency.name}">
+                            Посмотреть
+                        </button>
+                        <div class="modal fade" th:id="${agency.name}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Агентство недвижимости
+                                            [[${agency.name}]]</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Адрес: [[${agency.address}]]
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </center>
+        </tr>
+    </table>
+</section>
+</body>
+</html>

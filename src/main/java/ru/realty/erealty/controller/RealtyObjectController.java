@@ -66,17 +66,17 @@ public class RealtyObjectController {
         return new ResponseEntity<>("redirect:/myRealtyObjects", HttpStatus.OK).getBody();
     }
 
-    @GetMapping("/buyRealtyObject/{realtyObjectId}")
-    public String buyRealtyObject(final Model model, final @PathVariable String realtyObjectId)
+    @GetMapping("/buyRealtyObject/{id}")
+    public String buyRealtyObject(final Model model, final @PathVariable String id)
             throws RealtyObjectNotFoundException {
-        realtyObjectTemplateFillingService.fillBuyRealtyObjectTemplate(model, realtyObjectId);
+        realtyObjectTemplateFillingService.fillBuyRealtyObjectTemplate(model, id);
         return new ResponseEntity<>("buyRealtyObject", HttpStatus.OK).getBody();
     }
 
-    @PostMapping("/buyRealtyObject")
-    public String buyRealtyObjectWithDigitalSignature(final @ModelAttribute RealtyObject realtyObject)
+    @PostMapping("/buyRealtyObject/{id}")
+    public String buyRealtyObjectWithDigitalSignature(final @PathVariable Integer id)
             throws RealtyObjectNotFoundException {
-        return realtyObjectService.buyRealtyObjectWithDigitalSignature(realtyObject)
+        return realtyObjectService.buyRealtyObjectWithDigitalSignature(id)
                 ? new ResponseEntity<>("redirect:/", HttpStatus.OK).getBody()
                 : new ResponseEntity<>("/errorWithDigitalSignatureOrLessBalance", HttpStatus.OK).getBody();
     }

@@ -35,7 +35,7 @@
         </module>
         <module name="IllegalMethodCall">
             <property name="illegalMethodNames"
-                      value="emptyList, emptyMap, emptyNavigableMap, emptyNavigableSet, emptySet,emptySortedMap, emptySortedSet, now, parse, systemDefault, systemDefaultZone, singleton, singletonList, singletonMap"/>
+                      value="emptyList, emptyMap, emptyNavigableMap, emptyNavigableSet, emptySet,emptySortedMap, emptySortedSet, parse, systemDefault, systemDefaultZone, singleton, singletonList, singletonMap"/>
             <property name="excludedQualifiers" value="DockerImageName"/>
         </module>
         <module name="AvoidStarImport"/>

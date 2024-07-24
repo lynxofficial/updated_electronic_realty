@@ -1,58 +1,40 @@
 package ru.realty.erealty.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import ru.realty.erealty.entity.common.BaseEntity;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "realty_objects")
+@SuperBuilder
 @Getter
-@Builder
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "user")
-@ToString(exclude = "user")
-public class RealtyObject {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "realty_object_id")
-    private Integer realtyObjectId;
-    @Column(name = "realty_object_name")
-    @Setter
-    private String realtyObjectName;
+public class RealtyObject extends BaseEntity {
+    @Column(name = "name")
+    private String name;
     @Column(name = "description")
-    @Setter
     private String description;
     @Column(name = "image_url")
-    @Setter
     private String imageUrl;
     @Column(name = "price")
-    @Setter
     private BigDecimal price;
     @Column(name = "square")
-    @Setter
     private Double square;
     @Column(name = "address")
-    @Setter
     private String address;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @Setter
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 }

@@ -2,12 +2,12 @@ package ru.realty.erealty.service.user.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import ru.realty.erealty.constant.UserEmail;
 import ru.realty.erealty.support.BaseSpringBootTest;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
@@ -18,10 +18,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.mockito.Mockito.when;
+
 public class UserServiceImplTest extends BaseSpringBootTest {
     @Test
     void findAllShouldWork() {
-        Mockito.when(userRepository.findAll())
+        when(userRepository.findAll())
                 .thenReturn(List.of(
                         DataProvider.userBuilder().build(),
                         DataProvider.userBuilder().build()
@@ -29,12 +34,13 @@ public class UserServiceImplTest extends BaseSpringBootTest {
 
         List<User> users = userServiceImpl.findAll();
 
-        Assertions.assertEquals(userRepository.findAll(), users);
+        assertThat(users)
+                .isEqualTo(userRepository.findAll());
     }
 
     @Test
     void findAllShouldThrowsException() {
-        Mockito.when(userRepository.findAll())
+        when(userRepository.findAll())
                 .thenReturn(List.of(
                         DataProvider.userBuilder().build(),
                         DataProvider.userBuilder().build()
@@ -42,27 +48,30 @@ public class UserServiceImplTest extends BaseSpringBootTest {
 
         List<User> users = userServiceImpl.findAll();
 
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> users.add(new User()));
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> users.add(DataProvider.userBuilder().build()));
     }
 
     @Test
     void findByEmailShouldWork() {
-        String email = "test@test.com";
+        String email = UserEmail.DEFAULT_EMAIL;
         User user = DataProvider.userBuilder().build();
-        Mockito.when(userRepository.findByEmail(email))
+        when(userRepository.findByEmail(email))
                 .thenReturn(Optional.of(user));
 
-        Assertions.assertNotNull(userServiceImpl.findByEmail(email));
+        assertThat(userServiceImpl.findByEmail(email))
+                .isNotNull();
     }
 
     @Test
     void findByEmailThrowsException() {
-        String email = "test@test.com";
+        String email = UserEmail.DEFAULT_EMAIL;
         User user = DataProvider.userBuilder().build();
-        Mockito.when(userRepository.findByEmail(email))
+        when(userRepository.findByEmail(email))
                 .thenReturn(Optional.of(user));
 
-        Assertions.assertThrows(UsernameNotFoundException.class, () -> userServiceImpl.findByEmail(null));
+        assertThatExceptionOfType(UsernameNotFoundException.class)
+                .isThrownBy(() -> userServiceImpl.findByEmail(null));
     }
 
     @Test
@@ -70,9 +79,10 @@ public class UserServiceImplTest extends BaseSpringBootTest {
         User user = DataProvider.userBuilder().build();
         Mockito.doNothing()
                 .when(userRepository)
-                .deleteById(user.getUserId());
+                .deleteById(user.getId());
 
-        Assertions.assertDoesNotThrow(() -> userServiceImpl.deleteById(user.getUserId()));
+        assertThatNoException()
+                .isThrownBy(() -> userServiceImpl.deleteById(user.getId()));
     }
 
     @Test
@@ -80,14 +90,15 @@ public class UserServiceImplTest extends BaseSpringBootTest {
         User user = DataProvider.userBuilder()
                 .password("12345")
                 .build();
-        Mockito.when(userRepository.save(user))
+        when(userRepository.save(user))
                 .thenReturn(user);
 
         String url = "test.com";
 
         userServiceImpl.saveUser(user, url);
 
-        Assertions.assertFalse(user.getEnable());
+        assertThat(user.getEnable())
+                .isFalse();
     }
 
     @Test
@@ -95,12 +106,13 @@ public class UserServiceImplTest extends BaseSpringBootTest {
         User user = DataProvider.userBuilder()
                 .password("1234567")
                 .build();
-        Mockito.when(userRepository.save(user))
+        when(userRepository.save(user))
                 .thenReturn(user);
 
         String url = "test.com";
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> userServiceImpl.saveUser(new User(), url));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> userServiceImpl.saveUser(new User(), url));
     }
 
     @Test
@@ -108,7 +120,7 @@ public class UserServiceImplTest extends BaseSpringBootTest {
         User user = DataProvider.userBuilder()
                 .password("12345")
                 .build();
-        Mockito.when(userRepository.save(user))
+        when(userRepository.save(user))
                 .thenReturn(user);
 
         HttpSession httpSession = new MockHttpSession();
@@ -116,7 +128,8 @@ public class UserServiceImplTest extends BaseSpringBootTest {
 
         userServiceImpl.saveUser(user, httpSession, httpServletRequest);
 
-        Assertions.assertNotNull(httpSession.getAttribute("msg"));
+        assertThat(httpSession.getAttribute("msg"))
+                .isNotNull();
     }
 
     @Test
@@ -124,33 +137,36 @@ public class UserServiceImplTest extends BaseSpringBootTest {
         User user = DataProvider.userBuilder()
                 .password(null)
                 .build();
-        Mockito.when(userRepository.save(user))
+        when(userRepository.save(user))
                 .thenReturn(user);
 
         HttpSession httpSession = new MockHttpSession();
         HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-        Assertions.assertThrows(IllegalArgumentException.class,
-                () -> userServiceImpl.saveUser(user, httpSession, httpServletRequest));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> userServiceImpl.saveUser(user, httpSession, httpServletRequest));
     }
 
     @Test
-    void removeSessionMessageDoesNotThrowException() {
-        Assertions.assertDoesNotThrow(() -> userServiceImpl.removeSessionMessage());
+    void removeSessionMessageThrowsExceptionException() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> userServiceImpl.removeSessionMessage());
     }
 
     @Test
     void hasExpiredShouldWork() {
         LocalDateTime localDateTime = LocalDateTime.now();
 
-        Assertions.assertFalse(userServiceImpl.hasExpired(localDateTime));
+        assertThat(userServiceImpl.hasExpired(localDateTime))
+                .isFalse();
     }
 
     @Test
     void hasExpiredShouldNotWork() {
         LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(45);
 
-        Assertions.assertTrue(userServiceImpl.hasExpired(localDateTime));
+        assertThat(userServiceImpl.hasExpired(localDateTime))
+                .isTrue();
     }
 
     @Test
@@ -159,14 +175,16 @@ public class UserServiceImplTest extends BaseSpringBootTest {
         User user = DataProvider.userBuilder()
                 .verificationCode(verificationCode)
                 .build();
-        Mockito.when(userRepository.findByVerificationCode(verificationCode))
+
+        when(userRepository.findByVerificationCode(verificationCode))
                 .thenReturn(Optional.of(user));
-        Mockito.when(userRepository.save(user))
+        when(userRepository.save(user))
                 .thenReturn(user);
 
         userServiceImpl.verifyAccount(verificationCode);
 
-        Assertions.assertTrue(user.getEnable());
+        assertThat(user.getEnable())
+                .isTrue();
     }
 
     @Test
@@ -175,36 +193,44 @@ public class UserServiceImplTest extends BaseSpringBootTest {
         User user = DataProvider.userBuilder()
                 .verificationCode(verificationCode)
                 .build();
-        Mockito.when(userRepository.findByVerificationCode(verificationCode))
+
+        when(userRepository.findByVerificationCode(verificationCode))
                 .thenReturn(Optional.of(user));
-        Mockito.when(userRepository.save(user))
+        when(userRepository.save(user))
                 .thenReturn(user);
 
-        Assertions.assertThrows(UsernameNotFoundException.class,
-                () -> userServiceImpl.verifyAccount("128991740"));
+        assertThatExceptionOfType(UsernameNotFoundException.class)
+                .isThrownBy(() -> userServiceImpl.verifyAccount("128991740"));
     }
 
     @Test
     void resetPasswordProcessDoesNotThrowException() {
-        String email = "test@test.com";
+        String email = UserEmail.DEFAULT_EMAIL;
         User user = DataProvider.userBuilder().build();
-        Mockito.when(userRepository.findByEmail(email))
+
+        when(userRepository.findByEmail(email))
                 .thenReturn(Optional.of(user));
+
         user.setPassword("12345");
-        Mockito.when(userRepository.save(user))
+
+        when(userRepository.save(user))
                 .thenReturn(user);
 
-        Assertions.assertDoesNotThrow(() -> userServiceImpl.resetPasswordProcess(user));
+        assertThatNoException()
+                .isThrownBy(() -> userServiceImpl.resetPasswordProcess(user));
     }
 
     @Test
     void resetPasswordShouldNotWork() {
-        String email = "test@test.com";
+        String email = UserEmail.DEFAULT_EMAIL;
         User user = DataProvider.userBuilder().build();
-        Mockito.when(userRepository.findByEmail(email))
+
+        when(userRepository.findByEmail(email))
                 .thenReturn(Optional.of(new User()));
+
         user.setPassword("12345");
-        Mockito.when(userRepository.save(user))
+
+        when(userRepository.save(user))
                 .thenReturn(new User());
 
         String currentPassword = user.getPassword();
@@ -212,7 +238,8 @@ public class UserServiceImplTest extends BaseSpringBootTest {
         userServiceImpl.resetPasswordProcess(user);
 
         String changedPassword = user.getPassword();
-        Assertions.assertEquals(currentPassword, changedPassword);
+        assertThat(changedPassword)
+                .isEqualTo(currentPassword);
     }
 
     @Test
@@ -225,8 +252,11 @@ public class UserServiceImplTest extends BaseSpringBootTest {
                 .price(BigDecimal.valueOf(100_000L))
                 .build();
 
-        Assertions.assertTrue(userServiceImpl.isNotPositiveBalanceOrExistsDigitalSignature(currentUser,
-                targetUser, realtyObject));
+        assertThat(userServiceImpl.isNotPositiveBalanceOrExistsDigitalSignature(
+                        currentUser,
+                        targetUser,
+                        realtyObject))
+                .isTrue();
     }
 
     @Test
@@ -241,7 +271,50 @@ public class UserServiceImplTest extends BaseSpringBootTest {
                 .price(BigDecimal.valueOf(100_000L))
                 .build();
 
-        Assertions.assertThrows(NullPointerException.class, () -> userServiceImpl
-                .isNotPositiveBalanceOrExistsDigitalSignature(currentUser, targetUser, realtyObject));
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> userServiceImpl
+                        .isNotPositiveBalanceOrExistsDigitalSignature(currentUser, targetUser, realtyObject));
+    }
+
+    @Test
+    void isNotPositiveBalanceOrExistsDigitalSignatureWhenCurrentUserDigitalSignatureIsNull() {
+        User currentUser = DataProvider.userBuilder()
+                .balance(BigDecimal.valueOf(100_000L))
+                .digitalSignature(null)
+                .build();
+        User targetUser = DataProvider.userBuilder()
+                .balance(BigDecimal.valueOf(10_000L))
+                .build();
+        RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
+                .price(BigDecimal.valueOf(100_000L))
+                .build();
+
+        assertThat(userServiceImpl.isNotPositiveBalanceOrExistsDigitalSignature(
+                        currentUser,
+                        targetUser,
+                        realtyObject
+                ))
+                .isTrue();
+    }
+
+    @Test
+    void isNotPositiveBalanceOrExistsDigitalSignatureWhenCurrentUserIdEqualsTargetUserId() {
+        User currentUser = DataProvider.userBuilder()
+                .balance(BigDecimal.valueOf(100_000L))
+                .digitalSignature("1234567891011")
+                .build();
+        User targetUser = DataProvider.userBuilder()
+                .balance(BigDecimal.valueOf(10_000L))
+                .build();
+        RealtyObject realtyObject = DataProvider.realtyObjectBuilder()
+                .price(BigDecimal.valueOf(100_000L))
+                .build();
+
+        assertThat(userServiceImpl.isNotPositiveBalanceOrExistsDigitalSignature(
+                        currentUser,
+                        targetUser,
+                        realtyObject
+                ))
+                .isTrue();
     }
 }

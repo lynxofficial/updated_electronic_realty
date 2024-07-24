@@ -1,6 +1,6 @@
 package ru.realty.erealty.repository;
 
-import org.springframework.lang.NonNull;
+import lombok.NonNull;
 import ru.realty.erealty.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

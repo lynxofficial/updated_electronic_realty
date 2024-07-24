@@ -11,5 +11,8 @@ public interface UserVerificationService {
 
     boolean hasExpired(LocalDateTime expiryDateTime);
 
-    Boolean isNotPositiveBalanceOrExistsDigitalSignature(User currentUser, User targetUser, RealtyObject realtyObject);
+    Boolean isNotPositiveBalanceOrExistsDigitalSignature(
+            User currentUser,
+            User targetUser,
+            RealtyObject realtyObject);
 }
