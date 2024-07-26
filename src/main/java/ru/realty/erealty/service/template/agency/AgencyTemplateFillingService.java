@@ -1,4 +1,4 @@
-package ru.realty.erealty.service.agency;
+package ru.realty.erealty.service.template.agency;
 
 import org.springframework.ui.Model;
 

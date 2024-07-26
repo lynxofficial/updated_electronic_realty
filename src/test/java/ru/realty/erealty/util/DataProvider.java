@@ -2,6 +2,9 @@ package ru.realty.erealty.util;
 
 import ru.realty.erealty.constant.UserEmail;
 import ru.realty.erealty.constant.UserRole;
+import ru.realty.erealty.dto.AgencyResponse;
+import ru.realty.erealty.dto.RealtyObjectResponse;
+import ru.realty.erealty.dto.UserResponse;
 import ru.realty.erealty.entity.Agency;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.RealtyObject;
@@ -50,6 +53,38 @@ public class DataProvider {
                 .fullName("Test Test Test")
                 .passwordForDigitalSignature("123")
                 .digitalSignature("DigitalSignature");
+    }
+
+    public static AgencyResponse.AgencyResponseBuilder agencyResponseBuilder() {
+        return AgencyResponse.builder()
+                .id(1)
+                .address("Test district, 0")
+                .name("Test Agency");
+    }
+
+    public static RealtyObjectResponse.RealtyObjectResponseBuilder realtyObjectResponseBuilder() {
+        return RealtyObjectResponse.builder()
+                .id(0)
+                .address("Test district, 10")
+                .description("Test description")
+                .imageUrl("realtyObjectImageForTest.png")
+                .name("TestRealtyObject")
+                .square(40.9)
+                .user(userBuilder().build())
+                .price(BigDecimal.valueOf(1_000_000L));
+    }
+
+    public static UserResponse.UserResponseBuilder userResponseBuilder() {
+        return UserResponse.builder()
+                .id(0)
+                .password("1234")
+                .passwordForDigitalSignature("123")
+                .digitalSignature("DigitalSignature")
+                .role("ROLE_USER")
+                .balance(BigDecimal.ZERO)
+                .fullName("Test Test Test")
+                .enable(false)
+                .email(UserEmail.DEFAULT_EMAIL);
     }
 
     public static User createUserWithBalance(final Integer id) {

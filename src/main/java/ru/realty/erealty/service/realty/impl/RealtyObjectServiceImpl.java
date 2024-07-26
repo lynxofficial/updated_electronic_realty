@@ -2,6 +2,8 @@ package ru.realty.erealty.service.realty.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,6 +27,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "RealtyObjectServiceImplCache")
 public class RealtyObjectServiceImpl implements RealtyObjectService {
     private final RealtyObjectRepository realtyObjectRepository;
     private final UserRepository userRepository;
@@ -34,13 +37,15 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     private String defaultImagePath;
 
     @Override
+    @Cacheable
     public List<RealtyObject> findAll() {
         return realtyObjectRepository.findAll();
     }
 
     @Override
-    public RealtyObject buyRealtyObject(final String realtyObjectId) throws RealtyObjectNotFoundException {
-        return realtyObjectRepository.findById(Integer.valueOf(realtyObjectId))
+    @Cacheable
+    public RealtyObject buyRealtyObject(final String id) throws RealtyObjectNotFoundException {
+        return realtyObjectRepository.findById(Integer.valueOf(id))
                 .orElseThrow(() -> new RealtyObjectNotFoundException("Объект недвижимости не найден"));
     }
 
@@ -63,6 +68,7 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     }
 
     @Override
+    @Cacheable
     public Boolean buyRealtyObjectWithDigitalSignature(final Integer id)
             throws RealtyObjectNotFoundException {
         Optional<RealtyObject> optionalRealtyObject = realtyObjectRepository.findById(id);

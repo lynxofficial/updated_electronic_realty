@@ -7,8 +7,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8181:8181"
-    depends_on:
+    links:
       - db
+      - redis-cache
     environment:
       - SERVER_PORT=8181
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db/electronic_realty_database
@@ -20,3 +21,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: electronic_realty_database
+  redis-cache:
+    container_name: redis-cache
+    image: redis:5
+    ports:
+      - "6379:6379"
+    restart: always

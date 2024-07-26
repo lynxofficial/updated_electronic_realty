@@ -2,6 +2,8 @@ package ru.realty.erealty.service.mail.impl;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,6 +17,7 @@ import ru.realty.erealty.service.mail.MailSendingService;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "MailSendingServiceImplCache")
 public class MailSendingServiceImpl implements MailSendingService {
     private final JavaMailSender javaMailSender;
     private final FileHandlingSystemService fileHandlingSystemService;
@@ -50,6 +53,7 @@ public class MailSendingServiceImpl implements MailSendingService {
     }
 
     @Override
+    @Cacheable
     public String sendEmail(final User user) {
         try {
             User currentUser = userRepository

@@ -3,6 +3,8 @@ package ru.realty.erealty.service.user.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.realty.erealty.constant.UserRole;
@@ -26,17 +28,20 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "UserServiceImpl")
 public class UserServiceImpl implements UserVerificationService, UserSearchingService, UserModificationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailSendingService mailSendingService;
 
     @Override
+    @Cacheable
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
     @Override
+    @Cacheable
     public User findByEmail(final String email) {
         return userRepository
                 .findByEmail(email)
@@ -91,6 +96,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
+    @Cacheable
     public Boolean verifyAccount(final String verificationCode) {
         User user = userRepository.findByVerificationCode(verificationCode)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
