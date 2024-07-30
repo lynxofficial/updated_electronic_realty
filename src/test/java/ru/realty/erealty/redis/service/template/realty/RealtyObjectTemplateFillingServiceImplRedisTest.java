@@ -1,4 +1,4 @@
-package ru.realty.erealty.redis.service.template.home;
+package ru.realty.erealty.redis.service.template.realty;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -12,13 +12,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class HomeTemplateFillingServiceImplRedisTest extends BaseSpringBootTest {
+public class RealtyObjectTemplateFillingServiceImplRedisTest extends BaseSpringBootTest {
     @Test
-    void fillHomeTemplateCacheableShouldWork() {
+    void fillDeleteRealtyObjectsTemplateCacheableShouldWork() {
         Model model = new ExtendedModelMap();
 
-        homeTemplateFillingService.fillHomeTemplate(model);
-        homeTemplateFillingService.fillHomeTemplate(model);
+        realtyObjectTemplateFillingServiceImpl.fillDeleteRealtyObjectsTemplate(model);
+        realtyObjectTemplateFillingServiceImpl.fillDeleteRealtyObjectsTemplate(model);
 
         assertThat(redisCacheManager.getCacheNames())
                 .isNotNull();
@@ -26,18 +26,18 @@ class HomeTemplateFillingServiceImplRedisTest extends BaseSpringBootTest {
     }
 
     @Test
-    void fillHomeTemplateWithEmptyCacheShouldWork() {
+    void fillDeleteRealtyObjectsTemplateWithEmptyCacheShouldWork() {
         Model model = new ExtendedModelMap();
 
-        homeTemplateFillingService.fillHomeTemplate(model);
-        homeTemplateFillingService.fillHomeTemplate(model);
+        realtyObjectTemplateFillingServiceImpl.fillDeleteRealtyObjectsTemplate(model);
+        realtyObjectTemplateFillingServiceImpl.fillDeleteRealtyObjectsTemplate(model);
 
         Awaitility.await()
                 .pollInterval(Duration.ofSeconds(10L))
                 .atMost(Duration.ofSeconds(20L))
                 .untilAsserted(() -> {
-                    homeTemplateFillingService.fillHomeTemplate(model);
-                    homeTemplateFillingService.fillHomeTemplate(model);
+                    realtyObjectTemplateFillingServiceImpl.fillDeleteRealtyObjectsTemplate(model);
+                    realtyObjectTemplateFillingServiceImpl.fillDeleteRealtyObjectsTemplate(model);
                     verify(realtyObjectRepository, times(2)).findAll();
                 });
     }

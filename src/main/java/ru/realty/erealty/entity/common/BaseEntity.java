@@ -12,8 +12,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @SuperBuilder
@@ -21,7 +19,7 @@ import java.io.Serializable;
 @ToString
 @MappedSuperclass
 @EqualsAndHashCode
-public abstract class BaseEntity implements Serializable {
+public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

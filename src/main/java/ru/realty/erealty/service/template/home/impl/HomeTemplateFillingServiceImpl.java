@@ -11,7 +11,7 @@ import ru.realty.erealty.service.template.home.HomeTemplateFillingService;
 
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "HomeTemplateFillingServiceImplCache")
+@CacheConfig(cacheNames = "HomeTemplateFillingServiceImplCache", cacheManager = "redisCacheManager")
 public class HomeTemplateFillingServiceImpl implements HomeTemplateFillingService {
     private final RealtyObjectRepository realtyObjectRepository;
     private final RealtyObjectMapper realtyObjectMapper;

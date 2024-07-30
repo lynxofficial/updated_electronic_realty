@@ -9,8 +9,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -38,7 +38,8 @@ import ru.realty.erealty.service.token.ResetTokenGenerationService;
 import ru.realty.erealty.service.token.impl.ResetTokenGenerationServiceImpl;
 import ru.realty.erealty.service.user.UserDownloadingFileHttpResponseService;
 import ru.realty.erealty.service.user.impl.UserServiceImpl;
-import ru.realty.erealty.support.container.BaseSpringBootTestContainer;
+import ru.realty.erealty.support.container.BaseSpringBootPostgresqlTestContainer;
+import ru.realty.erealty.support.container.BaseSpringBootRedisTestContainer;
 
 import java.util.Objects;
 
@@ -48,8 +49,8 @@ import java.util.Objects;
 @AutoConfigureMockMvc
 @AutoConfigureWebTestClient
 @ContextConfiguration(initializers = {
-        BaseSpringBootTestContainer.PostgresqlContainerInitializer.class,
-        BaseSpringBootTestContainer.RedisContainerInitializer.class
+        BaseSpringBootPostgresqlTestContainer.PostgresqlContainerInitializer.class,
+        BaseSpringBootRedisTestContainer.RedisContainerInitializer.class
 })
 @ExtendWith(MockitoExtension.class)
 public class BaseSpringBootTest {
@@ -106,21 +107,21 @@ public class BaseSpringBootTest {
     @Autowired
     protected CustomAuthSuccessHandler customAuthSuccessHandler;
     @Autowired
-    protected CacheManager cacheManager;
+    protected RedisCacheManager redisCacheManager;
 
     @BeforeAll
     public static void initPostgresqlContainer() {
-        BaseSpringBootTestContainer.POSTGRESQL_CONTAINER.start();
+        BaseSpringBootPostgresqlTestContainer.POSTGRESQL_CONTAINER.start();
     }
 
     @BeforeAll
     public static void initRedisContainer() {
-        BaseSpringBootTestContainer.REDIS_CONTAINER.start();
+        BaseSpringBootRedisTestContainer.REDIS_CONTAINER.start();
     }
 
     @BeforeEach
     public void clearRedisCache() {
-        cacheManager.getCacheNames()
-                .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
+        redisCacheManager.getCacheNames()
+                .forEach(cacheName -> Objects.requireNonNull(redisCacheManager.getCache(cacheName)).clear());
     }
 }

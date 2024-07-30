@@ -21,7 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "RealtyObjectTemplateFillingServiceImplCache")
+@CacheConfig(cacheNames = "RealtyObjectTemplateFillingServiceImplCache", cacheManager = "redisCacheManager")
 public class RealtyObjectTemplateFillingServiceImpl implements RealtyObjectTemplateFillingService {
     private final RealtyObjectRepository realtyObjectRepository;
     private final RealtyObjectService realtyObjectService;
@@ -29,7 +29,6 @@ public class RealtyObjectTemplateFillingServiceImpl implements RealtyObjectTempl
     private final RealtyObjectMapper realtyObjectMapper;
 
     @Override
-    @Cacheable
     public void fillRealtyObjectTemplate(final Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -40,7 +39,6 @@ public class RealtyObjectTemplateFillingServiceImpl implements RealtyObjectTempl
     }
 
     @Override
-    @Cacheable
     public void fillBuyRealtyObjectTemplate(final Model model, final String realtyObjectId)
             throws RealtyObjectNotFoundException {
         model.addAttribute("realtyObject", realtyObjectMapper

@@ -11,7 +11,7 @@ import ru.realty.erealty.service.template.agency.AgencyTemplateFillingService;
 
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "AgencyTemplateFillingServiceImplCache")
+@CacheConfig(cacheNames = "AgencyTemplateFillingServiceImplCache", cacheManager = "redisCacheManager")
 public class AgencyTemplateFillingServiceImpl implements AgencyTemplateFillingService {
     private final AgencyRepository agencyRepository;
     private final AgencyMapper agencyMapper;

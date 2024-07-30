@@ -13,7 +13,6 @@ import java.util.Set;
 
 @Component
 public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
-
     @Override
     public void onAuthenticationSuccess(
             final HttpServletRequest request,
