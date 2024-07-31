@@ -9,11 +9,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserMapperTest {
+class UserMapperTest {
     private final UserMapper userMapper = new UserMapperImpl();
 
     @Test
-    public void toUserResponseShouldWork() {
+    void toUserResponseShouldWork() {
         User user = DataProvider.userBuilder().build();
         UserResponse actualUserResponse = DataProvider.userResponseBuilder().build();
 
@@ -24,7 +24,7 @@ public class UserMapperTest {
     }
 
     @Test
-    public void toUserResponseShouldNotWork() {
+    void toUserResponseShouldNotWork() {
         User user = DataProvider.userBuilder().build();
         UserResponse actualUserResponse = DataProvider.userResponseBuilder()
                 .id(123)
@@ -37,7 +37,7 @@ public class UserMapperTest {
     }
 
     @Test
-    public void toUserResponseListShouldWork() {
+    void toUserResponseListShouldWork() {
         List<User> users = List.of(
                 DataProvider.userBuilder().build(),
                 DataProvider.userBuilder().build()
@@ -54,7 +54,7 @@ public class UserMapperTest {
     }
 
     @Test
-    public void toUserResponseListShouldNotWork() {
+    void toUserResponseListShouldNotWork() {
         List<User> users = List.of(
                 DataProvider.userBuilder().build(),
                 DataProvider.userBuilder().build()

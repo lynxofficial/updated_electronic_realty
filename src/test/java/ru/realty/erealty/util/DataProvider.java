@@ -1,18 +1,24 @@
 package ru.realty.erealty.util;
 
+import org.springframework.mail.javamail.MimeMessageHelper;
 import ru.realty.erealty.constant.UserEmail;
 import ru.realty.erealty.constant.UserRole;
 import ru.realty.erealty.dto.AgencyResponse;
+import ru.realty.erealty.dto.MimeMessageHelperDto;
 import ru.realty.erealty.dto.RealtyObjectResponse;
+import ru.realty.erealty.dto.SimpleMailMessageDto;
 import ru.realty.erealty.dto.UserResponse;
 import ru.realty.erealty.entity.Agency;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
+import ru.realty.erealty.entity.support.MimeMessageHelperSupport;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import static ru.realty.erealty.constant.UserJavaMailSender.DEFAULT_JAVA_MAIL_SENDER;
 
 public class DataProvider {
     public static Agency.AgencyBuilder<?, ?> agencyBuilder() {
@@ -85,6 +91,30 @@ public class DataProvider {
                 .fullName("Test Test Test")
                 .enable(false)
                 .email(UserEmail.DEFAULT_EMAIL);
+    }
+
+    public static MimeMessageHelperSupport.MimeMessageHelperSupportBuilder mimeMessageHelperSupportBuilder() {
+        return MimeMessageHelperSupport
+                .builder()
+                .mimeMessageHelper(new MimeMessageHelper(DEFAULT_JAVA_MAIL_SENDER.createMimeMessage()));
+    }
+
+    public static MimeMessageHelperDto.MimeMessageHelperDtoBuilder mimeMessageHelperDtoBuilder() {
+        return MimeMessageHelperDto.builder()
+                .mimeMessage(DEFAULT_JAVA_MAIL_SENDER.createMimeMessage())
+                .from("from@test.com")
+                .to("to@test.com")
+                .subject("subject")
+                .content("content")
+                .mimeMessageHelper(new MimeMessageHelper(DEFAULT_JAVA_MAIL_SENDER.createMimeMessage()));
+    }
+
+    public static SimpleMailMessageDto.SimpleMailMessageDtoBuilder simpleMailMessageDtoBuilder() {
+        return SimpleMailMessageDto.builder()
+                .text("text")
+                .subject("test")
+                .to(new String[]{"testString"})
+                .from("test from");
     }
 
     public static User createUserWithBalance(final Integer id) {

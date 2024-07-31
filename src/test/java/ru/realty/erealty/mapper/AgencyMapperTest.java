@@ -9,11 +9,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AgencyMapperTest {
+class AgencyMapperTest {
     private final AgencyMapper agencyMapper = new AgencyMapperImpl();
 
     @Test
-    public void toAgencyResponseShouldWork() {
+    void toAgencyResponseShouldWork() {
         Agency agency = DataProvider.agencyBuilder().build();
         AgencyResponse actualAgencyResponse = DataProvider.agencyResponseBuilder().build();
 
@@ -24,7 +24,7 @@ public class AgencyMapperTest {
     }
 
     @Test
-    public void toAgencyResponseShouldNotWork() {
+    void toAgencyResponseShouldNotWork() {
         Agency agency = DataProvider.agencyBuilder().build();
         AgencyResponse actualAgencyResponse = DataProvider.agencyResponseBuilder()
                 .id(10)
@@ -37,7 +37,7 @@ public class AgencyMapperTest {
     }
 
     @Test
-    public void toAgencyResponseListShouldWork() {
+    void toAgencyResponseListShouldWork() {
         List<Agency> agencies = List.of(
                 DataProvider.agencyBuilder().build(),
                 DataProvider.agencyBuilder().build()

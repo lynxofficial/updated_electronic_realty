@@ -1,5 +1,6 @@
 package ru.realty.erealty.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -13,9 +14,12 @@ import java.util.Map;
 
 @Configuration
 public class RedisCacheManagerConfig {
+    @Value("${spring.cache.redis.time-to-live}")
+    private Integer cacheTimeToLive;
+
     public RedisCacheConfiguration redisCacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofSeconds(5L));
+                .entryTtl(Duration.ofMillis(cacheTimeToLive));
     }
 
     @Bean

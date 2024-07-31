@@ -19,9 +19,5 @@ public interface AgencyMapper {
     @Mapping(target = "address", source = "address")
     AgencyResponse toAgencyResponse(Agency agency);
 
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "address", source = "address")
     List<AgencyResponse> toAgencyResponseList(List<Agency> agencies);
 }

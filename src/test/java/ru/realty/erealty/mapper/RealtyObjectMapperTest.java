@@ -10,11 +10,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RealtyObjectMapperTest {
+class RealtyObjectMapperTest {
     private final RealtyObjectMapper realtyObjectMapper = new RealtyObjectMapperImpl();
 
     @Test
-    public void toRealtyObjectResponseShouldWork() {
+    void toRealtyObjectResponseShouldWork() {
         RealtyObject realtyObject = DataProvider.realtyObjectBuilder().build();
         RealtyObjectResponse actualRealtyObjectResponse = DataProvider.realtyObjectResponseBuilder().build();
 
@@ -25,7 +25,7 @@ public class RealtyObjectMapperTest {
     }
 
     @Test
-    public void toRealtyObjectResponseShouldNotWork() {
+    void toRealtyObjectResponseShouldNotWork() {
         RealtyObject realtyObject = DataProvider.realtyObjectBuilder().build();
         RealtyObjectResponse actualRealtyObjectResponse = DataProvider.realtyObjectResponseBuilder()
                 .id(101)
@@ -38,7 +38,7 @@ public class RealtyObjectMapperTest {
     }
 
     @Test
-    public void toRealtyObjectResponseListShouldWork() {
+    void toRealtyObjectResponseListShouldWork() {
         List<RealtyObject> realtyObjects = new ArrayList<>();
         realtyObjects.add(DataProvider.realtyObjectBuilder().build());
         realtyObjects.add(DataProvider.realtyObjectBuilder().build());
@@ -55,7 +55,7 @@ public class RealtyObjectMapperTest {
     }
 
     @Test
-    public void toRealtyObjectResponseListShouldNotWork() {
+    void toRealtyObjectResponseListShouldNotWork() {
         List<RealtyObject> realtyObjects = List.of(
                 DataProvider.realtyObjectBuilder().build(),
                 DataProvider.realtyObjectBuilder().build()

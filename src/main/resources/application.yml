@@ -1,6 +1,6 @@
+server:
+  port: ${SERVER_PORT}
 spring:
-  config:
-    import: optional:file:.env[.properties]
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     driver-class-name: org.postgresql.Driver
@@ -54,6 +54,3 @@ default:
       https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images/thirdImage.png,
       https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images/fourthImage.jpg, 
       https://raw.githubusercontent.com/lynxofficial/electronic_realty/main/images/fifthImage.png
-
-server:
-  port: ${SERVER_PORT}
