@@ -41,8 +41,7 @@ public class MailSendingServiceImpl implements MailSendingService {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelperDto mimeMessageHelperDto = MailDataProvider
-                    .mimeMessageHelperDtoBuilder(email, user, url, mimeMessage)
-                    .build();
+                    .mimeMessageHelperDtoBuilder(email, user, url, mimeMessage);
             MimeMessageHelper mimeMessageHelper = mimeMessageHelperMapper.fromMimeMessageHelperDto(mimeMessageHelperDto)
                     .getMimeMessageHelper();
             fileHandlingSystemService.runAsyncAttachImage(fileHandlingSystemService.attachImage(mimeMessageHelper));
@@ -61,8 +60,7 @@ public class MailSendingServiceImpl implements MailSendingService {
                     .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
             String resetLink = resetTokenGenerationService.generateResetToken(currentUser);
             SimpleMailMessageDto simpleMailMessageDto = MailDataProvider
-                    .simpleMailMessageDtoBuilder(email, currentUser, resetLink)
-                    .build();
+                    .simpleMailMessageDtoBuilder(email, currentUser, resetLink);
             SimpleMailMessage simpleMailMessage = simpleMailMessageMapper
                     .fromSimpleMailMessageDto(simpleMailMessageDto);
             new Thread(() -> javaMailSender.send(simpleMailMessage)).start();

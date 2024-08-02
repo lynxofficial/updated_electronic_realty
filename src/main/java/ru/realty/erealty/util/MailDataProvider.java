@@ -10,7 +10,7 @@ import ru.realty.erealty.entity.User;
 import java.io.UnsupportedEncodingException;
 
 public class MailDataProvider {
-    public static MimeMessageHelperDto.MimeMessageHelperDtoBuilder mimeMessageHelperDtoBuilder(
+    public static MimeMessageHelperDto mimeMessageHelperDtoBuilder(
             final String email,
             final User user,
             final String url,
@@ -39,10 +39,11 @@ public class MailDataProvider {
                 .from(email)
                 .to(to)
                 .subject(subject)
-                .content(content);
+                .content(content)
+                .build();
     }
 
-    public static SimpleMailMessageDto.SimpleMailMessageDtoBuilder simpleMailMessageDtoBuilder(
+    public static SimpleMailMessageDto simpleMailMessageDtoBuilder(
             final String email,
             final User currentUser,
             final String resetLink) {
@@ -51,6 +52,7 @@ public class MailDataProvider {
                 .to(new String[]{currentUser.getEmail()})
                 .subject("Сброс пароля")
                 .text("Здравствуйте \n\n" + "Пожалуйста, кликните на эту ссылку для сброса пароля:"
-                        + resetLink + ". \n\n" + "С уважением \n" + "Egor");
+                        + resetLink + ". \n\n" + "С уважением \n" + "Egor")
+                .build();
     }
 }
