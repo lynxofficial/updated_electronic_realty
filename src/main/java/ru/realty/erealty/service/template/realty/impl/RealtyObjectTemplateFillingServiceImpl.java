@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
@@ -29,6 +30,7 @@ public class RealtyObjectTemplateFillingServiceImpl implements RealtyObjectTempl
     private final RealtyObjectMapper realtyObjectMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public void fillRealtyObjectTemplate(final Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -47,6 +49,7 @@ public class RealtyObjectTemplateFillingServiceImpl implements RealtyObjectTempl
 
     @Override
     @Cacheable
+    @Transactional(readOnly = true)
     public void fillDeleteRealtyObjectsTemplate(final Model model) {
         model.addAttribute("realtyObjects", realtyObjectMapper
                 .toRealtyObjectResponseList(realtyObjectRepository.findAll()));

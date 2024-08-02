@@ -2,6 +2,7 @@ package ru.realty.erealty.service.token.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.realty.erealty.entity.PasswordResetToken;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.repository.CustomTokenRepository;
@@ -16,6 +17,7 @@ public class ResetTokenGenerationServiceImpl implements ResetTokenGenerationServ
     private final CustomTokenRepository customTokenRepository;
 
     @Override
+    @Transactional
     public String generateResetToken(final User user) {
         UUID uuid = UUID.randomUUID();
         LocalDateTime currentDateTime = LocalDateTime.now();

@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
@@ -34,17 +35,20 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     private String defaultImagePath;
 
     @Override
+    @Transactional(readOnly = true)
     public List<RealtyObject> findAll() {
         return realtyObjectRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RealtyObject buyRealtyObject(final String id) throws RealtyObjectNotFoundException {
         return realtyObjectRepository.findById(Integer.valueOf(id))
                 .orElseThrow(() -> new RealtyObjectNotFoundException("Объект недвижимости не найден"));
     }
 
     @Override
+    @Transactional
     public void sellRealtyObject(
             final User user,
             final RealtyObject realtyObject,
@@ -63,6 +67,7 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     }
 
     @Override
+    @Transactional
     public Boolean buyRealtyObjectWithDigitalSignature(final Integer id)
             throws RealtyObjectNotFoundException {
         Optional<RealtyObject> optionalRealtyObject = realtyObjectRepository.findById(id);
@@ -93,6 +98,7 @@ public class RealtyObjectServiceImpl implements RealtyObjectService {
     }
 
     @Override
+    @Transactional
     public void deleteRealtyObject(final RealtyObject realtyObject) throws RealtyObjectNotFoundException {
         RealtyObject currentRealtyObject = realtyObjectRepository.findById(realtyObject.getId())
                 .orElseThrow(() -> new RealtyObjectNotFoundException("Объект недвижимости не найден"));

@@ -2,6 +2,7 @@ package ru.realty.erealty.service.signature.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.realty.erealty.entity.User;
 import ru.realty.erealty.repository.UserRepository;
 import ru.realty.erealty.service.signature.DigitalSignatureGenerationService;
@@ -21,6 +22,7 @@ public class DigitalSignatureGenerationServiceImpl implements DigitalSignatureGe
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public void generateDigitalSignature(final String passwordForDigitalSignature, final User user)
             throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature signature = Signature.getInstance("SHA256WithDSA");

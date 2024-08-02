@@ -1,9 +1,13 @@
 package ru.realty.erealty.util;
 
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import ru.realty.erealty.dto.MimeMessageHelperDto;
 import ru.realty.erealty.dto.SimpleMailMessageDto;
 import ru.realty.erealty.entity.User;
+
+import java.io.UnsupportedEncodingException;
 
 public class MailDataProvider {
     public static MimeMessageHelperDto.MimeMessageHelperDtoBuilder mimeMessageHelperDtoBuilder(
@@ -19,7 +23,18 @@ public class MailDataProvider {
         content = content.replace("[[name]]", user.getFullName());
         String siteUrl = url + "/verify?code=" + user.getVerificationCode();
         content = content.replace("[[URL]]", siteUrl);
+        MimeMessageHelper mimeMessageHelper;
+        try {
+            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(email, "Egor");
+            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setText(content, true);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
         return MimeMessageHelperDto.builder()
+                .mimeMessageHelper(mimeMessageHelper)
                 .mimeMessage(mimeMessage)
                 .from(email)
                 .to(to)

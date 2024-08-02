@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import ru.realty.erealty.mapper.RealtyObjectMapper;
 import ru.realty.erealty.repository.RealtyObjectRepository;
@@ -18,6 +19,7 @@ public class HomeTemplateFillingServiceImpl implements HomeTemplateFillingServic
 
     @Override
     @Cacheable
+    @Transactional(readOnly = true)
     public void fillHomeTemplate(final Model model) {
         model.addAttribute("realtyObjects", realtyObjectMapper
                 .toRealtyObjectResponseList(realtyObjectRepository.findAll()));

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import ru.realty.erealty.mapper.AgencyMapper;
 import ru.realty.erealty.repository.AgencyRepository;
@@ -18,6 +19,7 @@ public class AgencyTemplateFillingServiceImpl implements AgencyTemplateFillingSe
 
     @Override
     @Cacheable
+    @Transactional(readOnly = true)
     public void fillAgencyTemplate(final Model model) {
         model.addAttribute("agencies", agencyMapper.toAgencyResponseList(agencyRepository.findAll()));
     }

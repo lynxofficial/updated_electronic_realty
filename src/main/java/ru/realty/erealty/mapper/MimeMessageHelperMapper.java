@@ -7,17 +7,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import ru.realty.erealty.dto.MimeMessageHelperDto;
 import ru.realty.erealty.entity.support.MimeMessageHelperSupport;
-import ru.realty.erealty.util.MimeMessageHelperMapperUtil;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        uses = MimeMessageHelperMapperUtil.class)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface MimeMessageHelperMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "mimeMessageHelper",
-            qualifiedByName = {"MimeMessageHelperMapperUtil", "generateMimeMessageHelper"},
-            source = ".")
+    @Mapping(target = "mimeMessageHelper", source = "mimeMessageHelper")
     @Mapping(target = "mimeMessage", source = "mimeMessage")
     @Mapping(target = "from", source = "from")
     @Mapping(target = "to", source = "to")

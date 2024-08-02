@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.realty.erealty.dto.MimeMessageHelperDto;
 import ru.realty.erealty.dto.SimpleMailMessageDto;
 import ru.realty.erealty.entity.User;
@@ -52,6 +53,7 @@ public class MailSendingServiceImpl implements MailSendingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String sendEmail(final User user) {
         try {
             User currentUser = userRepository

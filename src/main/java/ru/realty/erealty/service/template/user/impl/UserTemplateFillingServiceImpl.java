@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import ru.realty.erealty.mapper.UserMapper;
 import ru.realty.erealty.repository.UserRepository;
@@ -18,6 +19,7 @@ public class UserTemplateFillingServiceImpl implements UserTemplateFillingServic
 
     @Override
     @Cacheable
+    @Transactional(readOnly = true)
     public void fillDeleteUserTemplate(final Model model) {
         model.addAttribute("users", userMapper.toUserResponseList(userRepository.findAll()));
     }
