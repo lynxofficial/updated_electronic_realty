@@ -12,7 +12,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-public interface BaseSpringBootTestContainer {
+public interface BaseSpringBootPostgresqlTestContainer {
     @Container
     @ServiceConnection
     PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:14");
@@ -27,7 +27,7 @@ public interface BaseSpringBootTestContainer {
         dynamicPropertyRegistry.add("spring.flyway.password", POSTGRESQL_CONTAINER::getPassword);
     }
 
-    class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    class PostgresqlContainerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
         public void initialize(@NonNull final ConfigurableApplicationContext applicationContext) {
             TestPropertyValues.of(

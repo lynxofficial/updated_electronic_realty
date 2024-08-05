@@ -9,9 +9,13 @@ services:
       - "8181:8181"
     depends_on:
       - db
+      - redis-cache
+    env_file:
+      - .env
     environment:
       - SERVER_PORT=8181
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db/electronic_realty_database
+      - SPRING_DATA_REDIS_HOST=redis-cache
   db:
     image: postgres:14
     ports:
@@ -20,3 +24,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: electronic_realty_database
+  redis-cache:
+    container_name: redis-cache
+    image: redis:5
+    ports:
+      - "6379:6379"
+    restart: always

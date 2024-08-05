@@ -30,6 +30,13 @@
         <dependencies.flyway.version>10.15.2</dependencies.flyway.version>
         <plugins.jacoco.version>0.8.12</plugins.jacoco.version>
         <dependencies.assertj.version>3.26.3</dependencies.assertj.version>
+        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+        <plugins.maven.compiler.version>3.13.0</plugins.maven.compiler.version>
+        <dependencies.lombok.version>1.18.34</dependencies.lombok.version>
+        <plugins.lombok.mapstruct.binding>0.2.0</plugins.lombok.mapstruct.binding>
+        <dependencies.spring.boot.starter.data.redis.version>3.3.2</dependencies.spring.boot.starter.data.redis.version>
+        <dependencies.testcontainers.redis.version>1.4.6</dependencies.testcontainers.redis.version>
+        <dependencies.spring.dotenv.version>4.0.0</dependencies.spring.dotenv.version>
     </properties>
 
     <dependencies>
@@ -53,6 +60,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>${dependencies.spring.boot.starter.data.redis.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -91,12 +108,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-docker-compose</artifactId>-->
-        <!--            <optional>true</optional>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -118,6 +131,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.redis.testcontainers</groupId>
+            <artifactId>testcontainers-redis-junit-jupiter</artifactId>
+            <version>${dependencies.testcontainers.redis.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-testcontainers</artifactId>
             <scope>test</scope>
@@ -132,6 +151,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>${dependencies.spring.dotenv.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -142,9 +171,27 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${plugins.maven.compiler.version}</version>
                 <configuration>
                     <target>${maven.compiler.target}</target>
                     <source>${maven.compiler.source}</source>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${dependencies.lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>${plugins.lombok.mapstruct.binding}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

@@ -1,6 +1,7 @@
 package ru.realty.erealty.support;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -19,7 +21,7 @@ import ru.realty.erealty.repository.CustomTokenRepository;
 import ru.realty.erealty.repository.RealtyObjectRepository;
 import ru.realty.erealty.repository.UserRepository;
 import ru.realty.erealty.service.agency.impl.AgencyServiceImpl;
-import ru.realty.erealty.service.agency.impl.AgencyTemplateFillingServiceImpl;
+import ru.realty.erealty.service.template.agency.impl.AgencyTemplateFillingServiceImpl;
 import ru.realty.erealty.service.common.CommonUserAuthorizationService;
 import ru.realty.erealty.service.custom.impl.CustomTokenServiceImpl;
 import ru.realty.erealty.service.file.FileHandlingHttpResponseService;
@@ -36,14 +38,20 @@ import ru.realty.erealty.service.token.ResetTokenGenerationService;
 import ru.realty.erealty.service.token.impl.ResetTokenGenerationServiceImpl;
 import ru.realty.erealty.service.user.UserDownloadingFileHttpResponseService;
 import ru.realty.erealty.service.user.impl.UserServiceImpl;
-import ru.realty.erealty.support.container.BaseSpringBootTestContainer;
+import ru.realty.erealty.support.container.BaseSpringBootPostgresqlTestContainer;
+import ru.realty.erealty.support.container.BaseSpringBootRedisTestContainer;
+
+import java.util.Objects;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @PropertySource("classpath:application.yml")
 @PropertySource("classpath:application-test.yml")
 @AutoConfigureMockMvc
 @AutoConfigureWebTestClient
-@ContextConfiguration(initializers = BaseSpringBootTestContainer.Initializer.class)
+@ContextConfiguration(initializers = {
+        BaseSpringBootPostgresqlTestContainer.PostgresqlContainerInitializer.class,
+        BaseSpringBootRedisTestContainer.RedisContainerInitializer.class
+})
 @ExtendWith(MockitoExtension.class)
 public class BaseSpringBootTest {
     @MockBean
@@ -98,9 +106,22 @@ public class BaseSpringBootTest {
     protected WebTestClient webTestClient;
     @Autowired
     protected CustomAuthSuccessHandler customAuthSuccessHandler;
+    @Autowired
+    protected RedisCacheManager redisCacheManager;
 
     @BeforeAll
     public static void initPostgresqlContainer() {
-        BaseSpringBootTestContainer.POSTGRESQL_CONTAINER.start();
+        BaseSpringBootPostgresqlTestContainer.POSTGRESQL_CONTAINER.start();
+    }
+
+    @BeforeAll
+    public static void initRedisContainer() {
+        BaseSpringBootRedisTestContainer.REDIS_CONTAINER.start();
+    }
+
+    @BeforeEach
+    public void clearRedisCache() {
+        redisCacheManager.getCacheNames()
+                .forEach(cacheName -> Objects.requireNonNull(redisCacheManager.getCache(cacheName)).clear());
     }
 }

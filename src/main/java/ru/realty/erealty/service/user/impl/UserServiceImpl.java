@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import ru.realty.erealty.constant.UserRole;
 import ru.realty.erealty.entity.RealtyObject;
 import ru.realty.erealty.entity.User;
@@ -32,11 +33,13 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     private final MailSendingService mailSendingService;
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findByEmail(final String email) {
         return userRepository
                 .findByEmail(email)
@@ -44,11 +47,13 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
+    @Transactional
     public void deleteById(final Integer id) {
         userRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public Optional<User> saveUser(
             final User user,
             final String url
@@ -64,6 +69,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
+    @Transactional
     public void saveUser(
             final User user,
             final HttpSession httpSession,
@@ -91,6 +97,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
+    @Transactional
     public Boolean verifyAccount(final String verificationCode) {
         User user = userRepository.findByVerificationCode(verificationCode)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
@@ -101,6 +108,7 @@ public class UserServiceImpl implements UserVerificationService, UserSearchingSe
     }
 
     @Override
+    @Transactional
     public void resetPasswordProcess(final User user) {
         User currentUser = userRepository
                 .findByEmail(user.getEmail())
