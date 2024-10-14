@@ -32,7 +32,7 @@ Spring Data JPA – механизм Spring, благодаря которому
 ## Инструкция по установке
 
 1. Установить git (при необходимости);
-2. Выполнить команду git clone https://git.banki.ru/scm/~e.gorshenin/electronic_realty.git
+2. Выполнить команду git clone https://github.com/lynxofficial/updated_electronic_realty.git
 3. Перейти в директорию electronic_realty, установить maven и выполнить команду mvn clean package
 4. Установить docker (при необходимости) и выполнить команду docker compose up
 5. Обратиться по адресу http://localhost:8181
